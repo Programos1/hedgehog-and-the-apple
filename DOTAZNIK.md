@@ -20,7 +20,7 @@ Ovlivňuje obtížnost, množství textu a velikost tlačítek.
 - c) 3–8 let s nastavitelnou obtížností
 - ⭐ **Doporučení:** **c)** – cílová skupina 4–7 let, hra **bez nutnosti číst** (ikony, obrázky, namluvený hlas). Volitelně „Lehký / Normální“ režim pro rodiče.
 
-➡️ Odpověď:
+➡️ Odpověď: ✅ **3–5 let** (neumí číst, učí se ovládat zařízení).
 
 ### 1.3 Jazyk
 - ⭐ **Doporučení:** čeština od začátku, ale texty v samostatném souboru, aby šla snadno přidat angličtina (větší publikum na Google Play).
@@ -93,7 +93,7 @@ Fakta (viz `docs/02_herni_design.md` §4): ježci si **neukládají zásoby jíd
 - c) **Kombinace:** jako b), plus ježek po cestě sbírá **listí na hnízdo** (nese ho do úkrytu). Dva jednoduché cíle: najíst se + postavit hnízdo.
 - ⭐ **Doporučení:** **c)** (případně b) pro první prototyp). Je to pravdivé, pořád obsahuje tvoji hlavní pointu (sní jen červíka, jablko vyprskne), a nošení listí dává smysl úkrytu. Mýtus o jablkách na bodlinách využijeme jako vtipnou zajímavost: ježek se pokusí jablko napíchnout na bodliny a… nejde to. 😄
 
-➡️ Odpověď:
+➡️ Odpověď: ✅ **c)** jíst na místě (očuchá → červík → sní → vyprskne jablko, roste bříško) + nosí **listí na hnízdo** do úkrytu.
 
 ### 3.2 Kolik věcí může ježek nést najednou?
 - ⭐ **Doporučení:** **jednu** (v tlamičce). Jednoduché, nutí k cestám tam a zpět jen v malém levelu. Případně nošení úplně vypustit, pokud zvolíš 3.1 b).
@@ -136,7 +136,7 @@ Brief chce srdíčka a zranění.
 - b) **žádné prohry**: po „nehodě“ se ježek objeví na posledním bezpečném místě, nic se neztratí
 - ⭐ **Doporučení:** **b)**. Srdíčka z HUD vynechat. Malé dítě nemá být trestáno. Místo „zranění“ animace svinutí do klubíčka (naučné – tak se ježek brání).
 
-➡️ Odpověď:
+➡️ Odpověď: ✅ **b)** nikdy neprohraje – svine se do klubíčka a objeví se na posledním bezpečném místě, bez srdíček.
 
 ### 4.2 Překážky a zvířata
 - ⭐ **Doporučení:** jen **neškodné** překážky: louže/potok (cákne a vrátí se), padající šiška (svine se do klubíčka), trnité ostružiní (nedá se projít, nutno přeskočit). Zvířata jen jako přátelská kulisa (ptáček, motýl, spící liška). **Žádní nepřátelé.**
@@ -163,7 +163,7 @@ Brief doporučuje Godot. Ty chceš **prohlížeč + Android**.
 - b) **Godot 4** (silný editor; ale web export ~30–40 MB, pomalé načítání, potíže na mobilních prohlížečích)
 - ⭐ **Doporučení:** **a) Phaser 3 + TypeScript + Vite.** Hra se načte za pár sekund i na tabletu, testovat budeš jen otevřením odkazu, a z téhož kódu uděláme Android aplikaci. Na tuhle hru (2D, jednoduchá fyzika) je Phaser ideální.
 
-➡️ Odpověď:
+➡️ Odpověď: ✅ **a) Phaser 3 + TypeScript.**
 
 ### 5.2 Editor levelů
 - ⭐ **Doporučení:** **Tiled** (zdarma, tiled.org) – levely kreslíš myší, hra je načte. Můžeš pak sám upravovat levely bez programování.
@@ -232,7 +232,7 @@ Pro případné vydání (Google Play) je potřeba, aby hudba byla generovaná n
 - ⭐ **Doporučení:** repozitář `jezek` (nebo `jezek-a-jablicko`), zatím **soukromý**. Pro testování v prohlížeči/tabletu nasadíme na GitHub Pages (pro soukromé repo vyžaduje GitHub Pro, jinak alternativně Netlify/Cloudflare Pages zdarma).
 - Propojení: spusť v terminálu `! gh auth login` a pak mi dej vědět.
 
-➡️ Odpověď:
+➡️ Odpověď: ✅ repozitář **`hedgehog-and-the-apple`**, **veřejný** (účet Programos1), testovací verze přes GitHub Pages.
 
 ### 8.2 Cíl hry
 - a) pro vlastní děti / rodinu
