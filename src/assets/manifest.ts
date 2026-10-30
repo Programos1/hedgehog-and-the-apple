@@ -8,8 +8,8 @@ export const IMAGE_MANIFEST: Record<string, string | null> = {
   // Characters and objects
   hedgehog: null, // 128x96, facing right, feet at the bottom edge
   'hedgehog-curled': null, // 84x84
-  apple: null, // 52x56
-  'apple-bitten': null, // 52x56
+  apple: 'assets/images/apple.png', // ~60x70, cut from docs/reference/jablko.png (npm run apple)
+  'apple-bitten': 'assets/images/apple-bitten.png',
   larva: null, // 48x20
   leaf: null, // 56x40
   shelter: null, // 300x200, bottom edge = ground

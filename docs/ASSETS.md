@@ -39,6 +39,12 @@ upravit souřadnice v `tools/nibbles.sprites.json` (`node tools/find-sprites.mjs
 - všechny obrázky ve **stejném měřítku** a ideálně větší (postava aspoň 250 px na šířku → ostřejší na tabletu),
 - postava kouká **doprava**.
 
+## Jednotlivé objekty z malovaného obrázku
+
+Když objekt není na jednobarevném pozadí (např. výřez ze screenshotu), ale má **tmavý obrys**,
+vyřízne ho `tools/cut-object.mjs`. Jablko: `npm run apple`
+(z `docs/reference/jablko.png` udělá `apple.png` a automaticky i nakousnuté `apple-bitten.png`).
+
 ## Obrázky (klíč → rozměr)
 
 | Klíč | Rozměr (px) | Poznámka |

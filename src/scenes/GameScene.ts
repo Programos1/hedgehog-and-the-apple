@@ -100,6 +100,8 @@ export class GameScene extends Phaser.Scene {
 
     for (const def of L.apples) {
       const sprite = this.add.image(def.x, def.y, 'apple').setDepth(10);
+      // Level data gives the centre of a 56 px tall apple; keep the bottom on the ground for any artwork size.
+      sprite.y = def.y + 28 - sprite.height / 2;
       this.tweens.add({ targets: sprite, angle: { from: -4, to: 4 }, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       this.apples.push({ def, sprite, done: false });
     }
@@ -487,7 +489,7 @@ export class GameScene extends Phaser.Scene {
     const dir = h.facing;
     const startX = a.x;
     const landX = startX + dir * 200;
-    const floor = (this.groundTopAt(landX) ?? this.groundTopAt(startX) ?? GROUND_Y) - 24;
+    const floor = (this.groundTopAt(landX) ?? this.groundTopAt(startX) ?? GROUND_Y) - a.height / 2 + 4;
     const startY = a.y;
     this.tweens.addCounter({
       from: 0,

@@ -3,7 +3,7 @@
 > **Živý dokument.** Aktualizuje se s každým commitem (hlídá to git hook `.githooks/pre-commit`)
 > a po každém commitu se jeho přehled vypíše v terminálu (`.githooks/post-commit`).
 >
-> Poslední aktualizace: **2026-10-30** · Fáze: **2 – Hratelný prototyp (zástupná grafika)**
+> Poslední aktualizace: **2026-10-30** · Fáze: **3 – Grafika** (prototyp hotový)
 
 ---
 
@@ -18,7 +18,7 @@
 ## 🎯 Fronta úkolů pro autora (podle priority, dávkuje se po jednom)
 | # | Úkol | Proč teď | Stav |
 |---|---|---|---|
-| 1 | List objektů ve stylu Nibblese (jablko, nakousnuté jablko, housenka, listy, prázdný úkryt, šiška, cedulka) | ježek už je ve hře, objekty teď stylově nesedí | ▶️ zadáno |
+| 1 | Zbylé objekty ve stylu Nibblese: housenka, listy, prázdný úkryt, šiška, cedulka, list-vor, plošina (jablko ✅) | ježek a jablko už jsou ve hře, zbytek stylově nesedí | ▶️ zadáno |
 | 2 | Vyzkoušet hru na tabletu/telefonu s dítětem, poslat model zařízení a postřehy | ovládání a výkon na skutečném zařízení | čeká |
 | 5 | Suno: hudba pro menu + Slunnou louku (prompty v `docs/03_audio.md`), ověřit licenci (7.2) | hudba nezávisí na grafice | čeká |
 | 6 | Nahrát vlastní „mňam“ a „pfft“ (mobil stačí) | nejvýraznější zvuky hry | čeká |
@@ -41,6 +41,7 @@
 - [x] **Ježek Nibbles z autorovy grafiky** – animace stání, chůze, skoku, dopadu, čuchání, jedení, vyprsknutí, zásahu, oslavy (`npm run sprites`)
 - [x] Listí po cestě, víc listů najednou, úkryt vždy na konci levelu
 - [x] Nápověda ve 3 stupních: šipka na okraji → jiskřičky + záře u přehlédnuté věci
+- [x] Jablko z autorovy grafiky + automaticky nakousnutá verze (`npm run apple`)
 
 ---
 
@@ -122,7 +123,7 @@
 - [x] Model sheet Nibblese (autorův referenční list)
 - [x] Animace ježka z listu (stání, chůze, skok, dopad, čuchání, jedení, vyprsknutí, zásah, oslava)
 - [ ] Ježek ve vyšším rozlišení (list s postavou ≥ 250 px) pro ostrost na tabletu
-- [ ] Objekty (jablko, housenka, listí, úkryt, šiška)
+- [ ] Objekty: ~~jablko~~ ✅, housenka, listí, úkryt, šiška, cedulka
 - [ ] Level 1 grafika → Level 2 → Level 3
 - [ ] UI grafika, obrazovka „O hře“ s autorskými právy
 - [ ] Písmo (zaoblené, s českou diakritikou)
@@ -151,3 +152,4 @@
 | 2026-10-30 | Autor v licenci: Tomáš Horák. Hratelný prototyp se 3 levely, GitHub Pages, Suno prompty, docs |
 | 2026-10-30 | Název hry „Nibbles' Little Adventure“, fronta úkolů pro autora |
 | 2026-10-30 | Nibbles z autorovy grafiky (atlas + animace), listí po cestě / úkryt na konci, nápověda ve 3 stupních |
+| 2026-10-30 | Jablko z autorovy grafiky (vyříznuté z výřezu screenshotu), nakousnutá verze generovaná nástrojem |

@@ -10,7 +10,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit",
-    "sprites": "node tools/slice-sprites.mjs tools/nibbles.sprites.json"
+    "sprites": "node tools/slice-sprites.mjs tools/nibbles.sprites.json",
+    "apple": "node tools/cut-object.mjs docs/reference/jablko.png public/assets/images/apple.png --bite=public/assets/images/apple-bitten.png"
   },
   "dependencies": {
     "phaser": "^4.2.1"
