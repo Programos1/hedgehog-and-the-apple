@@ -1,0 +1,12 @@
+#!/bin/sh
+# Blocks a commit unless STAV_PROJEKTU.md is part of it.
+# Bypass only in emergencies: git commit --no-verify
+if ! git diff --cached --name-only | grep -qx "STAV_PROJEKTU.md"; then
+  echo ""
+  echo "⛔ Commit zastaven: STAV_PROJEKTU.md není v commitu."
+  echo "   Aktualizuj stav projektu (Aktuálně, Hotovo, datum, historie) a přidej ho:"
+  echo "   git add STAV_PROJEKTU.md"
+  echo ""
+  exit 1
+fi
+exit 0

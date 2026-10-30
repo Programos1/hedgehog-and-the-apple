@@ -1,0 +1,16 @@
+#!/bin/sh
+# Prints a short project status overview after every commit.
+F="STAV_PROJEKTU.md"
+[ -f "$F" ] || exit 0
+echo ""
+echo "================ 🦔 STAV PROJEKTU ================"
+grep -m1 "Poslední aktualizace" "$F" | sed 's/^> *//'
+echo ""
+# "Aktuálně" section
+awk '/^## 📌 Aktuálně/{p=1;next} /^---/{if(p)exit} p' "$F"
+echo "Otevřené otázky: $(grep -c '^- \[ \] [0-9]' "$F")   Nesplněné úkoly v roadmapě: $(awk '/^## 🗺️/{p=1} p' "$F" | grep -c '^- \[ \]')"
+echo ""
+echo "Další úkoly:"
+awk '/^## 🗺️/{p=1} p' "$F" | grep '^- \[ \]' | head -5
+echo "=================================================="
+echo ""
