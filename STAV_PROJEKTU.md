@@ -3,7 +3,7 @@
 > **Živý dokument.** Aktualizuje se s každým commitem (hlídá to git hook `.githooks/pre-commit`)
 > a po každém commitu se jeho přehled vypíše v terminálu (`.githooks/post-commit`).
 >
-> Poslední aktualizace: **2026-10-30** · Fáze: **3 – Grafika** (prototyp hotový)
+> Poslední aktualizace: **2026-10-31** · Fáze: **3 – Grafika** (prototyp hotový)
 
 ---
 
@@ -48,6 +48,7 @@
 - [x] **Malované levely**: pozadí = jeden obrázek, povrchy z modrého označení (`tools/trace-level.mjs`), testovací „Malovaná scéna“ v menu
 - [x] Pád do propasti = návrat na bezpečné místo; skok dopředu má vyšší oblouk (150 px)
 - [x] **Hudba**: 6 skladeb autora jako jeden playlist ve smyčce pro menu i hru, streamováno, funkční ztlumení
+- [x] Malovaná scéna celá na obrazovce (`view: 'whole'`), tmavý rám pro HUD a tlačítka
 
 ---
 
@@ -162,3 +163,4 @@
 | 2026-10-30 | Jablko z autorovy grafiky (vyříznuté z výřezu screenshotu), nakousnutá verze generovaná nástrojem |
 | 2026-10-30 | Malované levely (trace-level), testovací scéna, složka na hudbu, vyšší skok dopředu |
 | 2026-10-30 | Hudba: 6 skladeb jako společný playlist ve smyčce, oprava ztlumení |
+| 2026-10-31 | Malovaná scéna zobrazena celá (zpětná vazba: „příliš přiblížené“) |

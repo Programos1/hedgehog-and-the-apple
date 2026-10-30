@@ -26,6 +26,12 @@ a podle tvého označení ví, kudy se chodí. Ukázka: **Malovaná scéna** v m
 
 Stačí hrubě, já to doladím.
 
+## Jak je level vidět
+- **`view: 'whole'`** (testovací scéna): na obrazovce je **celý obrázek najednou**, jak byl navržený.
+  Nahoře a dole je tmavý rám – v horním je panel s úkoly, v dolním dotyková tlačítka, takže nezakrývají scénu.
+  Hodí se pro scény na jednu obrazovku (poměr stran ~2:1 až 3:1).
+- **`view: 'scroll'`**: obrázek vyplní výšku obrazovky a kamera jede za ježkem – pro dlouhé panoramatické levely.
+
 ## Na co myslet při kreslení
 - Ježek skáče **nahoru asi o 1,5 své výšky** a **dopředu asi o 2,5 své délky**. Mezery a výšky mezi plošinami
   by měly být v těchto mezích – jinak upravím velikost ježka v levelu (`worldScale`), aby to šlo.

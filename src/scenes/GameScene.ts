@@ -135,6 +135,7 @@ export class GameScene extends Phaser.Scene {
     const cam = this.cameras.main;
     cam.startFollow(this.hedgehog.visual, true, 0.08, 0.08, 0, 120);
     cam.setDeadzone(240, 200);
+    if (L.painted?.view === 'whole') this.showWholePicture();
     cam.fadeIn(400);
 
     this.hud = {
@@ -207,6 +208,35 @@ export class GameScene extends Phaser.Scene {
   private buildPainted(key: string): void {
     const img = this.add.image(0, 0, key).setOrigin(0, 0).setDepth(-10);
     img.setScale(GAME_HEIGHT / img.height);
+  }
+
+  /**
+   * Zooms the camera out so the whole painting is on screen, centred vertically. The empty bands
+   * above and below continue the picture's edge colours, so it looks like one scene.
+   */
+  private showWholePicture(): void {
+    const cam = this.cameras.main;
+    const w = this.level.width;
+    const zoom = Math.min(1, GAME_WIDTH / w);
+    const visibleH = GAME_HEIGHT / zoom;
+    const band = (visibleH - GAME_HEIGHT) / 2;
+    cam.setZoom(zoom);
+    cam.setBounds(0, -band, w, visibleH);
+    if (band <= 0) return;
+
+    // Dark warm frame above and below the painting (like a picture-book page); a soft shadow
+    // at the painting's edges blends it in. The HUD sits in the top band, touch buttons in the bottom one.
+    const FRAME = 0x231d14;
+    const fade = 40 / zoom;
+    const gfx = this.add.graphics().setDepth(5);
+    gfx.fillStyle(FRAME, 1);
+    gfx.fillRect(0, -band - 2, w, band + 2);
+    gfx.fillRect(0, GAME_HEIGHT, w, band + 2);
+    gfx.fillGradientStyle(FRAME, FRAME, FRAME, FRAME, 1, 1, 0, 0);
+    gfx.fillRect(0, 0, w, fade);
+    gfx.fillGradientStyle(FRAME, FRAME, FRAME, FRAME, 0, 0, 1, 1);
+    gfx.fillRect(0, GAME_HEIGHT - fade, w, fade);
+
   }
 
   /**
@@ -541,8 +571,9 @@ export class GameScene extends Phaser.Scene {
     const dir = h.facing;
     const startX = a.x;
     const landX = startX + dir * 200;
-    // Lands on the ground below; over a gap it falls out of the picture.
-    const floor = (this.groundTopAt(landX, a.y) ?? GAME_HEIGHT + 100) - a.displayHeight / 2 + 4;
+    // Lands on the ground below; over a gap it drops down and fades away.
+    const ground = this.groundTopAt(landX, a.y);
+    const floor = (ground ?? a.y + 260) - a.displayHeight / 2 + 4;
     const startY = a.y;
     this.tweens.addCounter({
       from: 0,
@@ -553,8 +584,9 @@ export class GameScene extends Phaser.Scene {
         a.x = startX + dir * 200 * t;
         a.y = Phaser.Math.Linear(startY, floor, t) - Math.sin(t * Math.PI) * 120;
         a.angle = 540 * t * dir;
+        if (ground === null) a.setAlpha(1 - t);
       },
-      onComplete: () => this.tweens.add({ targets: a, alpha: 0.55, duration: 400 }),
+      onComplete: () => (ground === null ? a.setVisible(false) : this.tweens.add({ targets: a, alpha: 0.55, duration: 400 })),
     });
   }
 
@@ -745,15 +777,17 @@ export class GameScene extends Phaser.Scene {
     const strong = this.missingAtShelter || (target.missed && this.stuckTime > 10) || this.stuckTime > 20;
     const show = target.missed || this.stuckTime > 12 || strong;
 
+    // World → screen position (works with camera zoom too).
     const cam = this.cameras.main;
-    const sx = target.x - cam.scrollX;
+    const view = cam.worldView;
+    const sx = (target.x - view.x) * cam.zoom;
     const onScreen = sx > 60 && sx < GAME_WIDTH - 60;
 
     // Edge arrow with a picture of the missing item.
     if (show && !onScreen) {
       const dir = sx > GAME_WIDTH / 2 ? 1 : -1;
       const t = this.time.now / (strong ? 120 : 220);
-      const sy = Phaser.Math.Clamp(target.y - cam.scrollY, 260, 720);
+      const sy = Phaser.Math.Clamp((target.y - view.y) * cam.zoom, 260, 720);
       this.guide
         .setVisible(true)
         .setPosition(dir > 0 ? GAME_WIDTH - 90 + Math.sin(t) * 10 : 90 - Math.sin(t) * 10, sy)

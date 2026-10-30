@@ -11,7 +11,7 @@ export const testScene: LevelData = {
   nameKey: 'testScene',
   theme: 'meadow',
   extra: true,
-  painted: { key: 'scene-test' },
+  painted: { key: 'scene-test', view: 'whole' },
   worldScale: 1.6,
   width: 2683,
   start: { x: 661, y: 520 },

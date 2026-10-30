@@ -62,6 +62,12 @@ export interface SurfaceDef {
 export interface PaintedDef {
   /** Texture key of the background picture (scaled to the game height). */
   key: string;
+  /**
+   * 'scroll' (default): the picture fills the screen height and the camera scrolls along it.
+   * 'whole': the whole picture is visible at once, like the painted design; free space above and
+   * below is filled with matching colour (the HUD and the touch buttons sit there).
+   */
+  view?: 'scroll' | 'whole';
 }
 
 export interface LevelData {
