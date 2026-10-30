@@ -111,3 +111,4 @@
 | Datum | Změna |
 |---|---|
 | 2026-10-30 | Založení projektu, zpracování zadání, dotazník |
+| 2026-10-30 | .gitattributes – LF konce řádků (hooky fungují i po klonování na Windows) |
