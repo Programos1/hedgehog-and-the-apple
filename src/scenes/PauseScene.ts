@@ -45,7 +45,6 @@ export class PauseScene extends Phaser.Scene {
   }
 
   private home(): void {
-    AudioManager.stopMusic();
     this.scene.stop('Hud');
     this.scene.stop('Game');
     this.scene.start('Menu');

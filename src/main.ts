@@ -31,4 +31,4 @@ const game = new Phaser.Game({
 AudioManager.init(game);
 
 // Expose the game for automated browser tests and debugging.
-(window as unknown as { __game: Phaser.Game }).__game = game;
+Object.assign(window as object, { __game: game, __audio: AudioManager });

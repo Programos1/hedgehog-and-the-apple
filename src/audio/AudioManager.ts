@@ -1,9 +1,11 @@
 import Phaser from 'phaser';
-import { AUDIO_MANIFEST, type SfxKey, type MusicKey } from '../assets/manifest';
+import { AUDIO_MANIFEST, type SfxKey } from '../assets/manifest';
 import { Progress } from '../systems/Progress';
 
-// Plays sound effects and music. When a real audio file is listed in the manifest and loaded,
-// it is used; otherwise a tiny synthesized placeholder sound is played, so the prototype is never silent.
+// Plays sound effects and the background music.
+// Sound effects: a real file from the manifest if loaded, otherwise a tiny synthesized placeholder.
+// Music: one playlist for the whole game, streamed through an <audio> element so it keeps playing
+// seamlessly across scene changes (menu → level → pause → next level) and loops forever.
 
 type Tone = { f: number; to?: number; d: number; type?: OscillatorType; v?: number; delay?: number };
 
@@ -30,23 +32,66 @@ const PLACEHOLDER_SFX: Record<SfxKey, Tone[]> = {
 
 class AudioManagerImpl {
   private game: Phaser.Game | null = null;
-  private music: Phaser.Sound.BaseSound | null = null;
-  private musicKey: MusicKey | null = null;
+  private music: HTMLAudioElement | null = null;
+  private track = 0;
+  /** Own copy of the mute state – Phaser's getter reports the change only after the next audio tick. */
+  private isMuted = false;
 
   init(game: Phaser.Game): void {
     this.game = game;
-    game.sound.mute = Progress.get().muted;
+    this.isMuted = Progress.get().muted;
+    game.sound.mute = this.isMuted;
+    this.initMusic();
+  }
+
+  private initMusic(): void {
+    const list = AUDIO_MANIFEST.musicPlaylist;
+    if (!list.length) return;
+    const audio = new Audio();
+    audio.preload = 'auto';
+    audio.volume = 0.45;
+    audio.muted = this.muted;
+    audio.addEventListener('ended', () => this.playTrack(this.track + 1));
+    // A broken file must not stop the music – skip to the next track.
+    audio.addEventListener('error', () => list.length > 1 && setTimeout(() => this.playTrack(this.track + 1), 500));
+    this.music = audio;
+    audio.src = list[0];
+
+    // Browsers only allow sound after the first tap / key press.
+    const start = () => {
+      window.removeEventListener('pointerdown', start);
+      window.removeEventListener('keydown', start);
+      void audio.play().catch(() => undefined);
+    };
+    window.addEventListener('pointerdown', start);
+    window.addEventListener('keydown', start);
+
+    // Stop the music while the app is in the background (phone locked, other tab).
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) audio.pause();
+      else if (audio.currentTime > 0) void audio.play().catch(() => undefined);
+    });
+  }
+
+  private playTrack(index: number): void {
+    const list = AUDIO_MANIFEST.musicPlaylist;
+    if (!this.music || !list.length) return;
+    this.track = index % list.length;
+    this.music.src = list[this.track];
+    void this.music.play().catch(() => undefined);
   }
 
   get muted(): boolean {
-    return this.game?.sound.mute ?? false;
+    return this.isMuted;
   }
 
   toggleMute(): boolean {
     if (!this.game) return false;
-    this.game.sound.mute = !this.game.sound.mute;
-    Progress.setMuted(this.game.sound.mute);
-    return this.game.sound.mute;
+    this.isMuted = !this.isMuted;
+    this.game.sound.mute = this.isMuted;
+    if (this.music) this.music.muted = this.isMuted;
+    Progress.setMuted(this.isMuted);
+    return this.isMuted;
   }
 
   sfx(key: SfxKey): void {
@@ -57,24 +102,6 @@ class AudioManagerImpl {
       return;
     }
     this.synth(PLACEHOLDER_SFX[key]);
-  }
-
-  /** Starts looping music for a level/menu. Silent until real music files are added. */
-  playMusic(key: MusicKey): void {
-    if (!this.game || this.musicKey === key) return;
-    this.stopMusic();
-    const cacheKey = `music-${key}`;
-    if (!AUDIO_MANIFEST.music[key] || !this.game.cache.audio.exists(cacheKey)) return;
-    this.music = this.game.sound.add(cacheKey, { loop: true, volume: 0.45 });
-    this.music.play();
-    this.musicKey = key;
-  }
-
-  stopMusic(): void {
-    this.music?.stop();
-    this.music?.destroy();
-    this.music = null;
-    this.musicKey = null;
   }
 
   private synth(tones: Tone[]): void {

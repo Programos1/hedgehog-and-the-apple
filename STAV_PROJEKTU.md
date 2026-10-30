@@ -9,8 +9,8 @@
 
 ## 📌 Aktuálně
 - **Teď:** prototyp je hratelný – 3 levely, menu, pauza, dotykové ovládání. Online: https://programos1.github.io/hedgehog-and-the-apple/
-- **Úkol pro autora:** 🎯 nahrát hudbu do `public/assets/audio/music/` a říct, která patří kam; pak housenka.
-- **Další krok (Claude):** zapojit hudbu; malované levely podle `docs/04_malovane_levely.md`.
+- **Úkol pro autora:** 🎯 housenka ve stylu Nibblese (#1 ve frontě).
+- **Další krok (Claude):** nasadit housenku; pak první ostrý malovaný level.
 - **Blokuje nás:** nic. Zbytek dotazníku (grafika 6.x, hudba 7.x) bude potřeba před Fází 3–4.
 
 ---
@@ -18,12 +18,12 @@
 ## 🎯 Fronta úkolů pro autora (podle priority, dávkuje se po jednom)
 | # | Úkol | Proč teď | Stav |
 |---|---|---|---|
-| 1 | Hudba: nahrát skladby do `public/assets/audio/music/` + říct, která je pro menu / louku / les / údolí | autor ji má připravenou | ▶️ zadáno |
-| 2 | Housenka ve stylu Nibblese (prompt v chatu) | hlavní naučný prvek | čeká |
+| 1 | Housenka ve stylu Nibblese (prompt v chatu) | hlavní naučný prvek | ▶️ zadáno |
+| ✅ | Hudba – 6 skladeb, jedna hudba pro celou hru ve smyčce | | hotovo |
 | 3 | První „ostrý“ malovaný level: čistý obrázek + označená kopie (`docs/04_malovane_levely.md`) | nový způsob tvorby levelů | čeká |
 | 4 | Zbylé objekty: listy, prázdný úkryt, šiška, cedulka, list-vor | stylová jednota | čeká |
 | 2 | Vyzkoušet hru na tabletu/telefonu s dítětem, poslat model zařízení a postřehy | ovládání a výkon na skutečném zařízení | čeká |
-| 5 | Suno: hudba pro menu + Slunnou louku (prompty v `docs/03_audio.md`), ověřit licenci (7.2) | hudba nezávisí na grafice | čeká |
+| 5 | Ověřit licenci hudby ze Suno (placený plán?) – dotazník 7.2 | nutné před vydáním | čeká |
 | 6 | Nahrát vlastní „mňam“ a „pfft“ (mobil stačí) | nejvýraznější zvuky hry | čeká |
 | 7 | Pozadí Level 1 po vrstvách (nebe, hory, stromy, popředí) | po objektech | čeká |
 | ✅ | Referenční screenshot + grafika ježka (`docs/reference/`) | | hotovo |
@@ -47,6 +47,7 @@
 - [x] Jablko z autorovy grafiky + automaticky nakousnutá verze (`npm run apple`)
 - [x] **Malované levely**: pozadí = jeden obrázek, povrchy z modrého označení (`tools/trace-level.mjs`), testovací „Malovaná scéna“ v menu
 - [x] Pád do propasti = návrat na bezpečné místo; skok dopředu má vyšší oblouk (150 px)
+- [x] **Hudba**: 6 skladeb autora jako jeden playlist ve smyčce pro menu i hru, streamováno, funkční ztlumení
 
 ---
 
@@ -93,7 +94,7 @@
 | P9 | Ježek z listu je malý (~110 px), na velkém tabletu může být lehce rozmazaný | později list ve vyšším rozlišení |
 | P12 | Testovací scéna je z malého screenshotu (974 px, namalované UI zamalováno) – je rozmazaná, vlevo nahoře tmavá skvrna | ostré levely z čistých obrázků ve vysokém rozlišení |
 | P11 | Objekty a pozadí jsou zatím kreslené kódem, stylově nesedí k ježkovi | úkol #1 pro autora |
-| P10 | Zvuky jsou syntetické pípnutí, hudba zatím chybí | Fáze 4 |
+| P10 | Zvukové efekty jsou zatím syntetické pípnutí | Fáze 4 |
 
 ---
 
@@ -136,7 +137,7 @@
 
 ### Fáze 4 – Zvuk a hudba
 - [x] Suno prompty pro menu + 3 levely
-- [ ] Vygenerovat a nasadit hudbu (smyčky)
+- [x] Hudba nasazena (6 skladeb, playlist ve smyčce)
 - [ ] Zvukové efekty (vlastní „mňam“ a „pfft“)
 - [ ] (volitelně) namluvení zajímavostí
 
@@ -160,3 +161,4 @@
 | 2026-10-30 | Nibbles z autorovy grafiky (atlas + animace), listí po cestě / úkryt na konci, nápověda ve 3 stupních |
 | 2026-10-30 | Jablko z autorovy grafiky (vyříznuté z výřezu screenshotu), nakousnutá verze generovaná nástrojem |
 | 2026-10-30 | Malované levely (trace-level), testovací scéna, složka na hudbu, vyšší skok dopředu |
+| 2026-10-30 | Hudba: 6 skladeb jako společný playlist ve smyčce, oprava ztlumení |

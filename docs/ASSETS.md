@@ -75,5 +75,11 @@ Bez souboru hraje krátký syntetický tón.
 
 ## Hudba
 
-Klíče v `AUDIO_MANIFEST.music`: `menu, meadow, forest, valley` – smyčky bez vokálu (Suno).
-Bez souboru je ticho.
+**Jedna hudba pro celou hru** (menu i všechny levely), hraje plynule i při přechodech mezi obrazovkami.
+Skladby ze složky `public/assets/audio/music/` jsou v seznamu `AUDIO_MANIFEST.musicPlaylist`
+(`src/assets/manifest.ts`) – hrají postupně za sebou a pak znovu od začátku.
+
+- Přidání skladby: ulož MP3 do složky (název bez mezer, např. `music-07.mp3`) a připiš ho do seznamu.
+- Skladby se nestahují předem, ale postupně při přehrávání → hra se načte rychle i na mobilu.
+- Hudba začne po prvním ťuknutí / stisku klávesy (pravidlo prohlížečů), při zamčení telefonu se zastaví.
+- Ztlumení: tlačítko v menu a v pauze (pamatuje si ho).

@@ -60,7 +60,6 @@ export class MenuScene extends Phaser.Scene {
       .setOrigin(0.5, 1)
       .setDepth(10);
 
-    AudioManager.playMusic('menu');
     this.cameras.main.fadeIn(300);
   }
 
@@ -73,7 +72,6 @@ export class MenuScene extends Phaser.Scene {
         // Not supported (e.g. iOS Safari) – play in the normal window.
       }
     }
-    AudioManager.stopMusic();
     this.scene.start('Game', { levelId });
   }
 }

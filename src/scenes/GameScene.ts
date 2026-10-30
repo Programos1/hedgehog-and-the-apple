@@ -5,7 +5,6 @@ import { Hedgehog } from '../entities/Hedgehog';
 import { AudioManager } from '../audio/AudioManager';
 import { LEVELS } from '../levels';
 import type { AppleDef, ConeDef, LevelData, MovingPlatformDef } from '../levels/types';
-import type { MusicKey } from '../assets/manifest';
 
 // Gameplay scene: builds a level from data and runs the core loop:
 // find apples -> sniff -> eat the larva -> spit the apple out; collect leaves on the way and bring them
@@ -150,7 +149,6 @@ export class GameScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.scene.stop('Hud'));
     this.events.on(Phaser.Scenes.Events.RESUME, () => Controls.clearTaps());
 
-    AudioManager.playMusic(L.theme as MusicKey);
   }
 
   update(_time: number, deltaMs: number): void {

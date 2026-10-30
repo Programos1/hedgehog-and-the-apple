@@ -20,7 +20,6 @@ export class BootScene extends Phaser.Scene {
     for (const [key, path] of Object.entries(IMAGE_MANIFEST)) if (path) this.load.image(key, path);
     for (const [key, atlas] of Object.entries(ATLAS_MANIFEST)) if (atlas) this.load.atlas(key, atlas.image, atlas.json);
     for (const [key, path] of Object.entries(AUDIO_MANIFEST.sfx)) if (path) this.load.audio(`sfx-${key}`, path);
-    for (const [key, path] of Object.entries(AUDIO_MANIFEST.music)) if (path) this.load.audio(`music-${key}`, path);
   }
 
   create(): void {

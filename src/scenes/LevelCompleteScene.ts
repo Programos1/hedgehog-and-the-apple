@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_HEIGHT, GAME_WIDTH } from '../config';
 import { RoundButton } from '../ui/RoundButton';
-import { AudioManager } from '../audio/AudioManager';
 import { FACTS } from '../data/facts';
 import { LEVELS } from '../levels';
 import { Progress } from '../systems/Progress';
@@ -64,7 +63,6 @@ export class LevelCompleteScene extends Phaser.Scene {
   }
 
   private go(scene: 'Menu' | 'Game', levelId?: number): void {
-    AudioManager.stopMusic();
     this.scene.stop('Game');
     this.scene.start(scene, { levelId });
   }

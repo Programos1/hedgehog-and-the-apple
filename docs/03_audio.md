@@ -1,5 +1,8 @@
 # 03 – Hudba a zvuky
 
+> **Stav 2026-10-30:** autor dodal 6 variant „Autumn Fairytale“ (Suno). Hra má **jednu společnou hudbu** pro menu i levely
+> (playlist ve smyčce, viz `docs/ASSETS.md`). Prompty níže zůstávají pro případné další skladby.
+
 Vychází z promptu pro Suno od ChatGPT (`01_vstupni_zadani.md` §E–F). Každá skladba má společný základ
 (stejná instrumentace a tempo), aby hra zněla jednotně, a vlastní náladu podle levelu.
 

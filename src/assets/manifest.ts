@@ -67,11 +67,9 @@ export type SfxKey =
   | 'complete'
   | 'tap';
 
-export type MusicKey = 'menu' | 'meadow' | 'forest' | 'valley';
-
 export const AUDIO_MANIFEST: {
   sfx: Record<SfxKey, string | null>;
-  music: Record<MusicKey, string | null>;
+  musicPlaylist: string[];
 } = {
   sfx: {
     jump: null,
@@ -88,11 +86,14 @@ export const AUDIO_MANIFEST: {
     complete: null,
     tap: null,
   },
-  // Instrumental loops (e.g. from Suno), .mp3 or .ogg, path relative to public/
-  music: {
-    menu: null,
-    meadow: null,
-    forest: null,
-    valley: null,
-  },
+  // One soundtrack for the whole game (menu and all levels): the tracks play one after another
+  // and the playlist loops. They are streamed, not preloaded, so the game starts quickly.
+  musicPlaylist: [
+    'assets/audio/music/music-01.mp3',
+    'assets/audio/music/music-02.mp3',
+    'assets/audio/music/music-03.mp3',
+    'assets/audio/music/music-04.mp3',
+    'assets/audio/music/music-05.mp3',
+    'assets/audio/music/music-06.mp3',
+  ],
 };
