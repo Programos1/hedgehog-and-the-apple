@@ -7,7 +7,7 @@ export const TEXTS = {
   level1: 'Slunná louka',
   level2: 'Lesní cestička',
   level3: 'Skalnaté údolí',
-  testScene: 'Malovaná scéna',
+  level4: 'Údolí vodopádů',
   didYouKnow: 'Víš, že…?',
   paused: 'Pauza',
   allDone: 'Hurá! Ježek je připravený na zimu.',

@@ -20,7 +20,7 @@
 |---|---|---|---|
 | 1 | Housenka ve stylu Nibblese (prompt v chatu) | hlavní naučný prvek | ▶️ zadáno |
 | ✅ | Hudba – 6 skladeb, jedna hudba pro celou hru ve smyčce | | hotovo |
-| 3 | První „ostrý“ malovaný level: čistý obrázek + označená kopie (`docs/04_malovane_levely.md`) | nový způsob tvorby levelů | čeká |
+| 3 | Kusy pro Level 4 ve vyšším rozlišení: pozadí po vrstvách, 2–3 ostrůvky, skála, úkryt (`docs/04_malovane_levely.md`) | ostřejší vzhled stavebnice | čeká |
 | 4 | Zbylé objekty: listy, prázdný úkryt, šiška, cedulka, list-vor | stylová jednota | čeká |
 | 2 | Vyzkoušet hru na tabletu/telefonu s dítětem, poslat model zařízení a postřehy | ovládání a výkon na skutečném zařízení | čeká |
 | 5 | Ověřit licenci hudby ze Suno (placený plán?) – dotazník 7.2 | nutné před vydáním | čeká |
@@ -48,7 +48,7 @@
 - [x] **Malované levely**: pozadí = jeden obrázek, povrchy z modrého označení (`tools/trace-level.mjs`), testovací „Malovaná scéna“ v menu
 - [x] Pád do propasti = návrat na bezpečné místo; skok dopředu má vyšší oblouk (150 px)
 - [x] **Hudba**: 6 skladeb autora jako jeden playlist ve smyčce pro menu i hru, streamováno, funkční ztlumení
-- [x] Malovaná scéna celá na obrazovce (`view: 'whole'`), tmavý rám pro HUD a tlačítka
+- [x] ~~Malovaná scéna~~ zrušena (autor: „není dobrá“) → nahrazena **Level 4 „Údolí vodopádů“** postaveným ze stavebnice kusů vyříznutých z autorovy malby (`npm run kit:valley`)
 
 ---
 
@@ -93,7 +93,7 @@
 | P7 | AI grafika/hudba nemusí být chráněná autorským právem | AI výstupy ručně dotvářet |
 | P8 | Při velmi nízkém FPS (slabé zařízení) se hra zpomalí (nezrychlí/neprojde zdí) | ověřit na skutečném tabletu |
 | P9 | Ježek z listu je malý (~110 px), na velkém tabletu může být lehce rozmazaný | později list ve vyšším rozlišení |
-| P12 | Testovací scéna je z malého screenshotu (974 px, namalované UI zamalováno) – je rozmazaná, vlevo nahoře tmavá skvrna | ostré levely z čistých obrázků ve vysokém rozlišení |
+| P12 | Kusy stavebnice (Level 4) jsou z malého screenshotu (974 px) → zvětšené 1,8–5×, pozadí měkké | dodat kusy ve vyšším rozlišení (každý zvlášť) |
 | P11 | Objekty a pozadí jsou zatím kreslené kódem, stylově nesedí k ježkovi | úkol #1 pro autora |
 | P10 | Zvukové efekty jsou zatím syntetické pípnutí | Fáze 4 |
 
@@ -164,3 +164,4 @@
 | 2026-10-30 | Malované levely (trace-level), testovací scéna, složka na hudbu, vyšší skok dopředu |
 | 2026-10-30 | Hudba: 6 skladeb jako společný playlist ve smyčce, oprava ztlumení |
 | 2026-10-31 | Malovaná scéna zobrazena celá (zpětná vazba: „příliš přiblížené“) |
+| 2026-10-31 | Malovaná scéna zrušena, nový Level 4 „Údolí vodopádů“ ze stavebnice kusů autorovy malby |

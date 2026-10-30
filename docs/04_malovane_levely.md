@@ -1,4 +1,33 @@
-# 04 – Malované levely (z obrázku do hry)
+# 04 – Levely v malovaném stylu
+
+## ✅ Doporučený způsob: stavebnice z malby (Level 4 „Údolí vodopádů“)
+
+Z malovaného obrázku se **vyříznou jednotlivé kusy** a level se z nich **postaví jako ze stavebnice**:
+
+| Kus | Odkud | Použití ve hře |
+|---|---|---|
+| `far.png` | obloha, mraky, sopka | vzdálené pozadí (pomalu se posouvá) |
+| `mid.png` | údolí s vodopády a řekou | bližší pozadí (posouvá se rychleji) |
+| `island.png` | létající ostrůvek s mechem | plošiny i jezdící plošiny |
+| `cliff.png` + `rock.png` | skála s mechem + skalní textura | pevná zem (start a cíl), dolů tmavne do údolí |
+| `shelter.png` | hromada listí s cedulkou | úkryt na konci |
+
+- Stavba kitu: `npm run kit:valley` (`tools/kits/build-valley-kit.mjs`, vyřezávání `tools/cut-region.mjs`).
+- Level: `src/levels/level4.ts` – stejná data jako ostatní levely (zem, plošiny, jablka, listy), jen s `kit`.
+- Mezi skalami je údolí: pád = návrat na bezpečné místo.
+
+**Výhoda:** rozvržení levelu navrhuju já podle skoků ježka (vždy dohratelné), malba dává jen vzhled.
+**Pro ostřejší vzhled** potřebuju kusy ve vyšším rozlišení – nejlépe každý zvlášť na jednobarevném pozadí:
+pozadí po vrstvách (obloha+hory, údolí), 2–3 různé ostrůvky, skála, úkryt.
+
+---
+
+## Starší způsob: hraní přímo na obrázku (zrušeno)
+
+Testovací „Malovaná scéna“ (hraní přímo na jednom obrázku podle modrého označení) byla odstraněna –
+nepůsobila dobře. Nástroj `tools/trace-level.mjs` a podpora v kódu (`painted`, `surfaces`) zůstávají
+pro případné pokusy. Původní popis:
+
 
 Místo skládání levelu z dlaždic může být celý level **jeden namalovaný obrázek**. Hra z něj vezme pozadí
 a podle tvého označení ví, kudy se chodí. Ukázka: **Malovaná scéna** v menu (`src/levels/testScene.ts`).

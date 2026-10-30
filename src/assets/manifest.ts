@@ -38,8 +38,13 @@ export const IMAGE_MANIFEST: Record<string, string | null> = {
   'bg-valley-far': null,
   'bg-valley-mid': null,
   'bg-valley-near': null,
-  // Painted level backgrounds (tools/trace-level.mjs)
-  'scene-test': 'assets/levels/test-scene.png',
+  // Valley kit cut from the author's reference scene (npm run kit:valley)
+  'kit-valley-far': 'assets/kits/valley/far.png',
+  'kit-valley-mid': 'assets/kits/valley/mid.png',
+  'kit-valley-island': 'assets/kits/valley/island.png',
+  'kit-valley-cliff': 'assets/kits/valley/cliff.png',
+  'kit-valley-rock': 'assets/kits/valley/rock.png',
+  'kit-valley-shelter': 'assets/kits/valley/shelter.png',
   // Fact card illustrations, 420x300
   'fact-insectivore': null,
   'fact-larva': null,

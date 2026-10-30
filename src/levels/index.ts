@@ -1,7 +1,7 @@
 import { level1 } from './level1';
 import { level2 } from './level2';
 import { level3 } from './level3';
-import { testScene } from './testScene';
+import { level4 } from './level4';
 import type { LevelData } from './types';
 
-export const LEVELS: LevelData[] = [level1, level2, level3, testScene];
+export const LEVELS: LevelData[] = [level1, level2, level3, level4];

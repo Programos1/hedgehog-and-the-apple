@@ -5,6 +5,8 @@ export type Theme = 'meadow' | 'forest' | 'valley';
 export interface GroundSegment {
   /** Left edge. */
   x: number;
+  /** Mirror the cliff artwork (kit levels): the rough rock edge then faces left. */
+  flip?: boolean;
   /** Width. */
   w: number;
   /** Top surface Y (defaults to GROUND_Y). */
@@ -53,6 +55,24 @@ export interface ConeDef {
   interval: number;
 }
 
+/**
+ * Art kit cut from a painted reference scene (tools/kits/…): parallax layers + platform pieces.
+ * Gameplay stays the same; only the look changes.
+ */
+export interface KitDef {
+  /** Far background (sky, mountains) and mid background (valley) texture keys. */
+  far: string;
+  mid: string;
+  /** Floating island used for one-way and moving platforms. */
+  island: string;
+  /** Cliff top (moss + rock face) for ground segments, plus a rock texture tiled below it. */
+  cliff: string;
+  rock: string;
+  shelter: string;
+  /** Display scale of the pieces (matches the hedgehog to the painted proportions). */
+  scale: number;
+}
+
 /** Walkable line traced from a painted scene (tools/trace-level.mjs), one-way from above. */
 export interface SurfaceDef {
   points: [number, number][];
@@ -92,6 +112,8 @@ export interface LevelData {
   hints: HintDef[];
   /** Id of the fact card shown when the level is finished. */
   factId: string;
+  /** Art kit – painted pieces instead of the placeholder tiles. Gaps between ground are a valley (no water). */
+  kit?: KitDef;
   /** Painted background (replaces parallax + ground tiles). */
   painted?: PaintedDef;
   /** Walkable lines for painted levels. */

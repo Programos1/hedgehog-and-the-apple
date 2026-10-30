@@ -4,7 +4,7 @@ import { Controls } from '../input/Controls';
 import { Hedgehog } from '../entities/Hedgehog';
 import { AudioManager } from '../audio/AudioManager';
 import { LEVELS } from '../levels';
-import type { AppleDef, ConeDef, LevelData, MovingPlatformDef } from '../levels/types';
+import type { AppleDef, ConeDef, KitDef, LevelData, MovingPlatformDef } from '../levels/types';
 
 // Gameplay scene: builds a level from data and runs the core loop:
 // find apples -> sniff -> eat the larva -> spit the apple out; collect leaves on the way and bring them
@@ -94,6 +94,7 @@ export class GameScene extends Phaser.Scene {
     const k = L.worldScale ?? 1;
     this.itemScale = k === 1 ? 1 : k * 0.8;
     if (L.painted) this.buildPainted(L.painted.key);
+    else if (L.kit) this.buildKitBackground(L.kit);
     else this.buildBackground();
     const solids = this.buildGround();
     const surfaces = this.buildSurfaces();
@@ -101,7 +102,9 @@ export class GameScene extends Phaser.Scene {
     this.buildMovers();
     this.buildHints();
 
-    this.shelter = this.add.image(L.shelter.x, L.shelter.y + 6, 'shelter').setOrigin(0.5, 1).setDepth(5);
+    this.shelter = L.kit
+      ? this.add.image(L.shelter.x, L.shelter.y + 4 * L.kit.scale, L.kit.shelter).setOrigin(0.5, 1).setDepth(5).setScale(L.kit.scale)
+      : this.add.image(L.shelter.x, L.shelter.y + 6, 'shelter').setOrigin(0.5, 1).setDepth(5);
     if (L.shelterPainted) this.shelter.setAlpha(0);
 
     for (const def of L.apples) {
@@ -199,6 +202,24 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
+  /** Kit background: far sky/mountains on top, the valley below; both scroll slower than the level. */
+  private buildKitBackground(kit: KitDef): void {
+    this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0xa9d1ee).setOrigin(0, 0).setScrollFactor(0).setDepth(-12);
+    const layer = (key: string, height: number, y: number, factor: number, depth: number) => {
+      const tex = this.textures.get(key).getSourceImage();
+      const scale = height / tex.height;
+      const tile = this.add
+        .tileSprite(0, y, GAME_WIDTH / scale + 2, tex.height, key)
+        .setOrigin(0, 0)
+        .setScale(scale)
+        .setScrollFactor(0)
+        .setDepth(depth);
+      this.parallax.push({ layer: tile, factor });
+    };
+    layer(kit.far, 640, 0, 0.08, -11);
+    layer(kit.mid, 600, GAME_HEIGHT - 600, 0.3, -10);
+  }
+
   private updateParallax(): void {
     const sx = this.cameras.main.scrollX;
     for (const { layer, factor } of this.parallax) layer.tilePositionX = (sx * factor) / layer.scaleX;
@@ -279,6 +300,12 @@ export class GameScene extends Phaser.Scene {
       const top = seg.y ?? GROUND_Y;
       const ground = this.add.tileSprite(seg.x, top, seg.w, GAME_HEIGHT - top + 200, tex).setOrigin(0, 0).setDepth(2);
       group.add(ground);
+      if (this.level.kit) {
+        // Kit look: painted cliff top + rock texture down to the bottom; gaps are a valley, not water.
+        ground.setVisible(false);
+        this.drawCliff(this.level.kit, seg.x, top, seg.w, seg.flip ?? false);
+        return;
+      }
 
       const next = segments[i + 1];
       const gapStart = seg.x + seg.w;
@@ -286,6 +313,36 @@ export class GameScene extends Phaser.Scene {
     });
     group.refresh();
     return group;
+  }
+
+  private drawCliff(kit: KitDef, x: number, top: number, w: number, flip: boolean): void {
+    const s = kit.scale;
+    const cliff = this.add.image(flip ? x + w : x, top - 8 * s, kit.cliff).setOrigin(0, 0).setDepth(3);
+    cliff.setDisplaySize(w, cliff.height * s).setFlipX(flip);
+    if (flip) cliff.setOrigin(1, 0);
+    // Rock below the painted face; inset a little on the rough side so the edge stays irregular.
+    // The cliff art has its rough edge on the left (on the right when flipped).
+    const inset = w * 0.07;
+    const rockTop = top + 70 * s;
+    const rx = flip ? x : x + inset;
+    const rh = GAME_HEIGHT - rockTop + 200;
+    this.add.tileSprite(rx, rockTop, w - inset, rh, kit.rock).setOrigin(0, 0).setTileScale(s, s).setDepth(2);
+    // The rock darkens towards the valley floor, so the cliff sinks into shadow instead of ending in a pattern.
+    const shade = this.add.graphics().setDepth(2);
+    shade.fillGradientStyle(0x1e140c, 0x1e140c, 0x1e140c, 0x1e140c, 0.15, 0.15, 0.92, 0.92);
+    shade.fillRect(rx, rockTop, w - inset, Math.min(rh, GAME_HEIGHT - rockTop));
+    shade.fillStyle(0x1e140c, 0.92);
+    shade.fillRect(rx, GAME_HEIGHT, w - inset, 200);
+  }
+
+  /** Floating island artwork matching a platform's width, its grass on the platform's top line. */
+  private islandArt(kit: KitDef, x: number, y: number, w: number): Phaser.GameObjects.Image {
+    const img = this.add.image(x + w / 2, y, kit.island).setOrigin(0.5, 0).setDepth(3);
+    const s = w / img.width;
+    img.setScale(s);
+    img.setData('lift', 7 * s);
+    img.y = y - 7 * s;
+    return img;
   }
 
   private addWater(x: number, w: number): void {
@@ -299,6 +356,10 @@ export class GameScene extends Phaser.Scene {
     for (const p of this.level.platforms) {
       const plat = this.add.tileSprite(p.x, p.y, p.w, 36, `platform-${this.level.theme}`).setOrigin(0, 0).setDepth(3);
       group.add(plat);
+      if (this.level.kit) {
+        plat.setVisible(false);
+        this.islandArt(this.level.kit, p.x, p.y, p.w);
+      }
       const body = plat.body as Phaser.Physics.Arcade.StaticBody;
       // One-way: solid only from above, so the hedgehog can jump up through it.
       body.checkCollision.down = false;
@@ -318,7 +379,14 @@ export class GameScene extends Phaser.Scene {
       body.checkCollision.down = false;
       body.checkCollision.left = false;
       body.checkCollision.right = false;
-      this.movers.push({ def, sprite, body, forward: true, waitLeft: def.wait ?? 1.5 });
+      const mover: Mover = { def, sprite, body, forward: true, waitLeft: def.wait ?? 1.5 };
+      if (this.level.kit) {
+        sprite.setVisible(false);
+        const art = this.islandArt(this.level.kit, def.x, def.y, def.w);
+        // Follow the physics body after each physics step, so the hedgehog and island move together.
+        this.events.on(Phaser.Scenes.Events.POST_UPDATE, () => art.setPosition(body.x + def.w / 2, body.y - art.getData('lift')));
+      }
+      this.movers.push(mover);
     }
   }
 

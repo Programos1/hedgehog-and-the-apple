@@ -11,7 +11,8 @@
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit",
     "sprites": "node tools/slice-sprites.mjs tools/nibbles.sprites.json",
-    "apple": "node tools/cut-object.mjs docs/reference/jablko.png public/assets/images/apple.png --bite=public/assets/images/apple-bitten.png"
+    "apple": "node tools/cut-object.mjs docs/reference/jablko.png public/assets/images/apple.png --bite=public/assets/images/apple-bitten.png",
+    "kit:valley": "node tools/kits/build-valley-kit.mjs"
   },
   "dependencies": {
     "phaser": "^4.2.1"
