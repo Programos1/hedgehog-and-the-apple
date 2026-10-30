@@ -3,31 +3,36 @@
 > **Živý dokument.** Aktualizuje se s každým commitem (hlídá to git hook `.githooks/pre-commit`)
 > a po každém commitu se jeho přehled vypíše v terminálu (`.githooks/post-commit`).
 >
-> Poslední aktualizace: **2026-10-31** · Fáze: **3 – Grafika** (prototyp hotový)
+> Poslední aktualizace: **2026-10-31** · Fáze: **3 – Grafika** (prototyp hotový, 4 levely)
 
 ---
 
 ## 📌 Aktuálně
-- **Teď:** prototyp je hratelný – 3 levely, menu, pauza, dotykové ovládání. Online: https://programos1.github.io/hedgehog-and-the-apple/
-- **Úkol pro autora:** 🎯 housenka ve stylu Nibblese (#1 ve frontě).
-- **Další krok (Claude):** nasadit housenku; pak první ostrý malovaný level.
-- **Blokuje nás:** nic. Zbytek dotazníku (grafika 6.x, hudba 7.x) bude potřeba před Fází 3–4.
+- **Kde jsme skončili (2026-10-31):** hratelné 4 levely – Louka, Les, Skalnaté údolí a nový **Level 4 „Údolí vodopádů“** postavený ze stavebnice kusů autorovy malby (ostrůvky, skály, úkryt, pozadí s vodopády). Ježek Nibbles a jablko z autorovy grafiky, hudba (6 skladeb ve smyčce). Online: https://programos1.github.io/hedgehog-and-the-apple/
+- **Úkol pro autora:** 🎯 #1 – zahrát si Level 4 a rozhodnout, jestli „stavebnice z malby“ je ten správný směr pro další levely.
+- **Další krok (Claude):** podle odpovědi – buď další levely ze stavebnice (a převést Level 1–3 do stejného stylu), nebo jiný přístup; pak housenka.
+- **Blokuje nás:** nic. Ostřejší grafika potřebuje kusy ve vyšším rozlišení (úkol #3).
 
 ---
 
 ## 🎯 Fronta úkolů pro autora (podle priority, dávkuje se po jednom)
 | # | Úkol | Proč teď | Stav |
 |---|---|---|---|
-| 1 | Housenka ve stylu Nibblese (prompt v chatu) | hlavní naučný prvek | ▶️ zadáno |
-| ✅ | Hudba – 6 skladeb, jedna hudba pro celou hru ve smyčce | | hotovo |
-| 3 | Kusy pro Level 4 ve vyšším rozlišení: pozadí po vrstvách, 2–3 ostrůvky, skála, úkryt (`docs/04_malovane_levely.md`) | ostřejší vzhled stavebnice | čeká |
-| 4 | Zbylé objekty: listy, prázdný úkryt, šiška, cedulka, list-vor | stylová jednota | čeká |
-| 2 | Vyzkoušet hru na tabletu/telefonu s dítětem, poslat model zařízení a postřehy | ovládání a výkon na skutečném zařízení | čeká |
-| 5 | Ověřit licenci hudby ze Suno (placený plán?) – dotazník 7.2 | nutné před vydáním | čeká |
-| 6 | Nahrát vlastní „mňam“ a „pfft“ (mobil stačí) | nejvýraznější zvuky hry | čeká |
-| 7 | Pozadí Level 1 po vrstvách (nebe, hory, stromy, popředí) | po objektech | čeká |
-| ✅ | Referenční screenshot + grafika ježka (`docs/reference/`) | | hotovo |
-| ✅ | Zpětná vazba: listí po cestě, úkryt na konci, víc listů, šipka k přehlédnutému | | hotovo |
+| 1 | Zahrát Level 4 „Údolí vodopádů“ – sedí směr „stavebnice z malby“? | rozhoduje, jak dělat všechny další levely | ▶️ zadáno |
+| 2 | Housenka ve stylu Nibblese (prompt: zelená housenka z boku, hlava vpravo, stejný styl a obrys, světlé pozadí, ≥ 300 px) | hlavní naučný prvek, je zatím kreslená kódem | čeká |
+| 3 | Kusy stavebnice ve vyšším rozlišení, každý zvlášť na jednobarevném pozadí: pozadí po vrstvách (obloha+hory, údolí), 2–3 ostrůvky, skála, úkryt | Level 4 je ze screenshotu 974 px → měkký | čeká |
+| 4 | Vyzkoušet hru na tabletu/telefonu s dítětem, poslat model zařízení a postřehy | ovládání a výkon na skutečném zařízení | čeká |
+| 5 | Zbylé objekty: listy, šiška, cedulka | stylová jednota | čeká |
+| 6 | Nahrát vlastní „mňam“ a „pfft“ (mobil stačí) | zvukové efekty jsou zatím pípání | čeká |
+| 7 | Ověřit licenci hudby ze Suno (placený plán?) – dotazník 7.2 | nutné před vydáním | čeká |
+| ✅ | Hudba, grafika ježka, jablko, referenční scéna, zpětná vazba k levelům | | hotovo |
+
+## 🧩 Co ve hře ještě chybí (přehled)
+- **Grafika:** housenka, listy, šiška, cedulky, UI tlačítka a kartičky „Víš, že…?“ jsou zatím kreslené kódem; Level 1–3 mají zástupná pozadí a dlaždice (nesedí ke stylu Levelu 4).
+- **Zvuk:** zvukové efekty jsou syntetické pípání.
+- **Obsah:** zajímavosti jen 3, bez namluvení; fakta neověřená člověkem.
+- **Testování:** hra nebyla vyzkoušena na skutečném tabletu/telefonu ani s dítětem.
+- **Vydání:** PWA (instalace, offline), Android (Capacitor), licence hudby, pravidla Google Play.
 
 ---
 
@@ -167,3 +172,4 @@
 | 2026-10-31 | Malovaná scéna zrušena, nový Level 4 „Údolí vodopádů“ ze stavebnice kusů autorovy malby |
 | 2026-10-31 | Zrychlená animace jedení jablka (~3,6 s → ~2 s) |
 | 2026-10-31 | Level 4: skály jako jeden souvislý obrázek (bez schodů, děr a opakovaného vzoru) |
+| 2026-10-31 | Konec dne: shrnutí kde jsme skončili, aktualizovaná fronta a přehled co chybí |
