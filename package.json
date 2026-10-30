@@ -1,0 +1,21 @@
+{
+  "name": "hedgehog-and-the-apple",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Naučná 2D skákačka pro malé děti. © 2026 Tomáš Horák, všechna práva vyhrazena.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "phaser": "^4.2.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^8.3.5"
+  }
+}

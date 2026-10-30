@@ -20,3 +20,9 @@ Dokumentace a komunikace česky, komentáře v kódu anglicky.
 - **Před každým commitem aktualizovat `STAV_PROJEKTU.md`** (Aktuálně, Hotovo, otázky, rizika, datum, historie změn). Hook `.githooks/pre-commit` commit bez něj zablokuje.
 - Po commitu hook `.githooks/post-commit` vypíše přehled stavu; v odpovědi autorovi vždy stručně shrnout, co je hotovo a co je další krok.
 - Po klonování: `git config core.hooksPath .githooks`
+
+## Vývoj
+- Phaser 4 + TypeScript + Vite. `npm run dev`, `npm run build` (obsahuje typovou kontrolu).
+- Levely jsou data v `src/levels/` – navrhují se podle pevných skoků v `src/config.ts` (skok nahoru ~190 px, dopředu ~330 px).
+- Grafika/zvuk se mění jen přes `src/assets/manifest.ts` (viz `docs/ASSETS.md`).
+- `window.__game` je vystavené pro automatické testy v prohlížeči.

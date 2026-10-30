@@ -49,7 +49,7 @@ Pracovní název: **Ježek a jablíčko** (EN: *Hedgehog & The Apple*) — [NÁV
 
 ---
 
-## 3. Herní smyčka (core loop) [NÁVRH]
+## 3. Herní smyčka (core loop) [ROZHODNUTO – viz §10, tato původní verze je překonaná]
 
 1. Ježek prochází level a hledá spadlá jablka.
 2. Jablko sebere (dotykem) a nese ho (max. počet nesených: 1? → dotazník 3.2).
@@ -85,7 +85,7 @@ Další ověřená fakta vhodná do hry (kartičky „Víš, že…?“):
 
 ---
 
-## 5. Levely [NÁVRH]
+## 5. Levely [IMPLEMENTOVÁNO v prototypu – viz §10]
 
 | Level | Prostředí | Obtížnost | Nové prvky | Jablek |
 |---|---|---|---|---|
@@ -104,7 +104,7 @@ Další ověřená fakta vhodná do hry (kartičky „Víš, že…?“):
 
 ---
 
-## 6. Technologie [NÁVRH – čeká na potvrzení, dotazník 5.1]
+## 6. Technologie [ROZHODNUTO: Phaser 4 + TypeScript + Vite]
 
 Brief doporučuje Godot 4. Kvůli cíli **web → Android** a jednoduchosti nasazení doporučuji:
 
@@ -119,7 +119,7 @@ Předpokládaná architektura (Phaser):
 - `src/input/` – jednotná vrstva vstupu (klávesnice + dotyk → stejné akce)
 - `src/data/` – fakta o ježcích, nastavení levelů
 - `public/assets/` – grafika/zvuk podle pevné struktury, výměna bez zásahu do kódu (manifest)
-- Levely jako **Tiled JSON** mapy.
+- Levely zatím jako TypeScript data (`src/levels/`); převod z **Tiled** map doplníme, až budeš chtít levely kreslit sám.
 - Uložení postupu: `localStorage` (žádný server, žádná osobní data).
 - Komentáře v kódu anglicky, texty hry přes překladový soubor (CZ první).
 
@@ -154,3 +154,31 @@ Předpokládaná architektura (Phaser):
 - Výkon: cílit na 60 FPS i na levném tabletu; velikost stažení < 20 MB.
 - Rodičovská sekce (nastavení, odkazy) za jednoduchou „rodičovskou zámkou“.
 - Google Play – kategorie pro rodiny má přísná pravidla (žádné sledování, reklamy jen certifikované) → dotazník 8.x.
+
+---
+
+## 10. Rozhodnutí z dotazníku a aktuální implementace (2026-10-30)
+
+**Zodpovězeno autorem:** věk 3–5 let · smyčka „jíst na místě + listí na hnízdo“ · nikdy neprohraje · Phaser · veřejný repozitář s „všechna práva vyhrazena“.
+**Předběžně podle doporučení** (dotazník nevyplněn, lze změnit): skok za chůze = ježek sám zastaví (2.2) · bez běhu (2.3) · zdravá jablka od levelu 2 (3.3) · kartička „Víš, že…?“ na konci levelu (3.5) · zatím bez hlasu (3.6) · jen neškodné překážky (4.2) · bez časového limitu a skóre (4.3) · reálná příroda, ne pravěk (1.5).
+
+### Herní smyčka (platná)
+1. Ježek dojde k jablku → zastaví se a **očuchá** ho.
+2. **Jablko s červíkem:** vyleze housenka → ježek ji sní („mňam“) → jablko **vyprskne** obloukem pryč. V HUD se rozsvítí housenka.
+3. **Zdravé jablko** (od levelu 2): bublina s přeškrtnutou housenkou, ježek zavrtí hlavou a jablko nechá.
+4. **Listí:** ježek nese vždy 1 list na zádech → donese ho do úkrytu → list přistane na hnízdě. V HUD se rozsvítí list.
+5. Když je vše hotové, úkryt se třpytí → ježek do něj vleze a usne → kartička „Víš, že…?“ → další level.
+6. Šipka nad ježkem ukazuje k nejbližšímu cíli, když je mimo obrazovku (pro nejmenší).
+
+### Pevné skoky (`src/config.ts`)
+- Chůze 230 px/s. Skok nahoru: výška ~190 px. Skok dopředu: výška ~120 px, délka ~330 px.
+- Plošiny jsou „jednosměrné“: dá se na ně vyskočit zespodu.
+
+### Levely v prototypu
+| Level | Délka | Housenky | Zdravá jablka | Listí | Nové prvky |
+|---|---|---|---|---|---|
+| 1. Slunná louka | 3800 px | 3 | 0 | 2 | cedulky s nápovědou, 1 potůček |
+| 2. Lesní cestička | 5000 px | 4 | 1 | 3 | dvoupatrová plošina, schod, list-vor přes potok |
+| 3. Skalnaté údolí | 5600 px | 5 | 2 | 3 | věž plošin, kamenný výtah na útes, padající šišky (ježek se svine) |
+
+Všechny 3 levely byly automaticky dohrány v prohlížeči (test 2026-10-30).
