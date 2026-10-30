@@ -4,7 +4,7 @@
 > Položky označené **[NÁVRH]** čekají na potvrzení v [`DOTAZNIK.md`](../DOTAZNIK.md).
 > Položky označené **[ROZHODNUTO]** jsou závazné.
 
-Pracovní název: **Ježek a jablíčko** (EN: *Hedgehog & The Apple*) — [NÁVRH], viz dotazník 1.1
+Název hry: **Nibbles' Little Adventure** [ROZHODNUTO 2026-10-30]. Ježek se jmenuje **Nibbles**.
 
 ---
 

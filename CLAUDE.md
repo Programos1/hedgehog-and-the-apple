@@ -1,6 +1,6 @@
-# Pravidla projektu – Ježek a jablíčko
+# Pravidla projektu – Nibbles' Little Adventure
 
-Naučná 2D skákačka pro **malé děti**: ježek najde jablko, sní z něj jen „červíka“ (housenku) a jablko vyprskne.
+Naučná 2D skákačka pro **malé děti** o ježkovi jménem Nibbles: ježek najde jablko, sní z něj jen „červíka“ (housenku) a jablko vyprskne.
 Dokumentace a komunikace česky, komentáře v kódu anglicky.
 
 ## Závazná pravidla
@@ -15,6 +15,9 @@ Dokumentace a komunikace česky, komentáře v kódu anglicky.
 - `DOTAZNIK.md` – otázky pro autora a jeho odpovědi.
 - `docs/01_vstupni_zadani.md` – archiv původního zadání (neupravovat).
 - `docs/02_herni_design.md` – platný herní design.
+
+## Spolupráce s autorem
+- Úkoly pro autora (otázky, grafika, assety) **dávkovat po jednom**, seřazené podle priority. Frontu udržovat v `STAV_PROJEKTU.md` → „Fronta úkolů pro autora“.
 
 ## Workflow commitů
 - **Před každým commitem aktualizovat `STAV_PROJEKTU.md`** (Aktuálně, Hotovo, otázky, rizika, datum, historie změn). Hook `.githooks/pre-commit` commit bez něj zablokuje.

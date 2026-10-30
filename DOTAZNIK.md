@@ -11,7 +11,7 @@ Pokud nevíš, nech prázdné – použiju doporučení (⭐).
 Brief používá *Hedgehog & The Apple*. Hra bude primárně česky?
 - ⭐ **Doporučení:** český název **„Ježek a jablíčko“** (pracovně), anglický *Hedgehog & The Apple*. Krátký název se líp hledá na Google Play. Alternativy: „Ježkova podzimní cesta“, „Ježek Bodlinka“.
 
-➡️ Odpověď:
+➡️ Odpověď: ✅ **Nibbles' Little Adventure** – ježek se jmenuje Nibbles.
 
 ### 1.2 Pro jak staré děti?
 Ovlivňuje obtížnost, množství textu a velikost tlačítek.

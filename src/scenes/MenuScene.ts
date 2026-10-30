@@ -19,7 +19,7 @@ export class MenuScene extends Phaser.Scene {
       img.setScale(GAME_HEIGHT / img.height);
     }
     const style = { fontFamily: 'Trebuchet MS', color: '#fff3d6', stroke: '#3b2a1e', strokeThickness: 14 };
-    this.add.text(GAME_WIDTH / 2, 150, t('title'), { ...style, fontSize: '110px' }).setOrigin(0.5).setDepth(10);
+    this.add.text(GAME_WIDTH / 2, 150, t('title'), { ...style, fontSize: '100px' }).setOrigin(0.5).setDepth(10);
 
     const hero = this.add.image(GAME_WIDTH / 2 - 120, 340, 'hedgehog').setScale(1.8).setDepth(10);
     this.add.image(GAME_WIDTH / 2 + 120, 330, 'apple').setScale(1.8).setDepth(10);

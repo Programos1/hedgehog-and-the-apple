@@ -8,7 +8,7 @@ import { HudScene } from './scenes/HudScene';
 import { PauseScene } from './scenes/PauseScene';
 import { LevelCompleteScene } from './scenes/LevelCompleteScene';
 
-// Ježek a jablíčko – © 2026 Tomáš Horák. All rights reserved.
+// Nibbles' Little Adventure – © 2026 Tomáš Horák. All rights reserved.
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,

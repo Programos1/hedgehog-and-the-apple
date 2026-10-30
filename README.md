@@ -1,6 +1,6 @@
-# 🦔 Ježek a jablíčko
+# 🦔 Nibbles' Little Adventure
 
-Naučná 2D skákačka pro malé děti (3–5 let). Ježek hledá jablka, sní z nich jen červíka (housenku)
+Naučná 2D skákačka pro malé děti (3–5 let). Ježek Nibbles hledá jablka, sní z nich jen červíka (housenku)
 a jablko vtipně vyprskne. Pak nanosí listí do úkrytu a uloží se k zimnímu spánku.
 Hra běží v prohlížeči, později i na Android telefonech a tabletech.
 

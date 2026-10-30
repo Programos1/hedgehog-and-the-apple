@@ -1,4 +1,4 @@
-# 🦔 STAV PROJEKTU – Ježek a jablíčko
+# 🦔 STAV PROJEKTU – Nibbles' Little Adventure
 
 > **Živý dokument.** Aktualizuje se s každým commitem (hlídá to git hook `.githooks/pre-commit`)
 > a po každém commitu se jeho přehled vypíše v terminálu (`.githooks/post-commit`).
@@ -9,8 +9,22 @@
 
 ## 📌 Aktuálně
 - **Teď:** prototyp je hratelný – 3 levely, menu, pauza, dotykové ovládání. Online: https://programos1.github.io/hedgehog-and-the-apple/
-- **Další krok:** autor vyzkouší hru (ideálně s dítětem na tabletu) a dá zpětnou vazbu → pak Fáze 3 (grafika, začít model sheetem ježka).
+- **Úkol pro autora:** 🎯 #1 z fronty níže – vyzkoušet hru na tabletu/telefonu a poslat zpětnou vazbu.
+- **Další krok (Claude):** zapracovat zpětnou vazbu → připravit zadání model sheetu Nibblese (Fáze 3).
 - **Blokuje nás:** nic. Zbytek dotazníku (grafika 6.x, hudba 7.x) bude potřeba před Fází 3–4.
+
+---
+
+## 🎯 Fronta úkolů pro autora (podle priority, dávkuje se po jednom)
+| # | Úkol | Proč teď | Stav |
+|---|---|---|---|
+| 1 | Vyzkoušet prototyp na tabletu/telefonu (ideálně s dítětem), poslat zpětnou vazbu + model zařízení | ovlivní ovládání a obtížnost dřív, než se kreslí grafika | ▶️ zadáno |
+| 2 | Uložit referenční screenshot od ChatGPT do `docs/reference/` | podklad pro styl grafiky | čeká |
+| 3 | Vybrat nástroj na generování grafiky (dotazník 6.1) | podmínka pro Fázi 3 | čeká |
+| 4 | Vygenerovat model sheet Nibblese podle promptu od Clauda | základ celé grafiky | čeká |
+| 5 | Suno: hudba pro menu + Slunnou louku (prompty v `docs/03_audio.md`), ověřit licenci (7.2) | hudba nezávisí na grafice | čeká |
+| 6 | Nahrát vlastní „mňam“ a „pfft“ (mobil stačí) | nejvýraznější zvuky hry | čeká |
+| 7 | Objekty a pozadí Level 1 (seznam a rozměry dodá Claude) | po schválení ježka | čeká |
 
 ---
 
@@ -42,16 +56,17 @@
 | R10 | Cílová skupina **3–5 let**: hra bez čtení, velká tlačítka, velmi lehké levely | dotazník 1.2 |
 | R11 | Herní smyčka: jablko očuchá **na místě** → housenka → sní → vyprskne jablko; do úkrytu nosí **listí na hnízdo** | dotazník 3.1 |
 | R12 | **Nikdy neprohraje**: bez srdíček; voda = návrat na bezpečné místo, šiška = svinutí do klubíčka | dotazník 4.1 |
+| R14 | Název hry: **Nibbles' Little Adventure**, ježek se jmenuje **Nibbles** | autor |
 | R13 | Technologie: **Phaser 4 + TypeScript + Vite** (Phaser 4 je aktuální verze), Android později přes Capacitor | dotazník 5.1 |
 
 **Předběžně podle doporučení** (autor neodpověděl, lze změnit): skok za chůze → ježek sám zastaví (2.2), bez běhu (2.3), zdravá jablka od levelu 2 (3.3), kartička na konci levelu (3.5), zatím bez hlasu (3.6), reálná příroda místo pravěku (1.5).
 
 ## ❓ Otevřené otázky (detail v DOTAZNIK.md)
-- [ ] 1.x Finální název hry, jazyk, referenční screenshot od ChatGPT
+- [ ] 1.x Jazyk hry (název je anglický, texty zatím česky), referenční screenshot
 - [ ] 2.4 Ťukací režim pro nejmenší (později)
 - [ ] 3.4 Další potrava (brouci, žížaly) v levelech 2–3
 - [ ] 5.x Tiled editor, testovací zařízení, zkušenosti s programováním
-- [ ] 6.x Grafika – nástroj, technika animace, podoba a jméno ježka
+- [ ] 6.x Grafika – nástroj, technika animace, podoba Nibblese
 - [ ] 7.x Hudba – licence Suno, zvukové efekty
 - [ ] 8.x Cíl hry, Google Play
 
@@ -100,7 +115,7 @@
 - [ ] Testování s dítětem 👶 a úprava obtížnosti podle něj
 
 ### Fáze 3 – Grafika
-- [ ] Model sheet ježka (proporce, barvy, výraz, jméno)
+- [ ] Model sheet Nibblese (proporce, barvy, výraz)
 - [ ] Animace ježka (chůze, skok, čuchání, jedení, vyprsknutí, klubíčko, spánek)
 - [ ] Objekty (jablko, housenka, listí, úkryt, šiška)
 - [ ] Level 1 grafika → Level 2 → Level 3
@@ -129,3 +144,4 @@
 | 2026-10-30 | Zapsány odpovědi 1.2, 3.1, 4.1, 5.1, 8.1 (rozhodnutí R10–R13), GitHub přihlášen |
 | 2026-10-30 | LICENSE – všechna práva vyhrazena; repozitář zveřejněn na GitHubu |
 | 2026-10-30 | Autor v licenci: Tomáš Horák. Hratelný prototyp se 3 levely, GitHub Pages, Suno prompty, docs |
+| 2026-10-30 | Název hry „Nibbles' Little Adventure“, fronta úkolů pro autora |

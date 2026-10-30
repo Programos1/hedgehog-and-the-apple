@@ -2,7 +2,7 @@
 // The game is for kids who cannot read yet, so texts are short and always paired with pictures.
 
 export const TEXTS = {
-  title: 'Ježek a jablíčko',
+  title: "Nibbles' Little Adventure",
   tapToPlay: 'Ťukni a hraj',
   level1: 'Slunná louka',
   level2: 'Lesní cestička',
