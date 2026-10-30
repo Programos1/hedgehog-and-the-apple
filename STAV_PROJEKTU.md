@@ -165,3 +165,4 @@
 | 2026-10-30 | Hudba: 6 skladeb jako společný playlist ve smyčce, oprava ztlumení |
 | 2026-10-31 | Malovaná scéna zobrazena celá (zpětná vazba: „příliš přiblížené“) |
 | 2026-10-31 | Malovaná scéna zrušena, nový Level 4 „Údolí vodopádů“ ze stavebnice kusů autorovy malby |
+| 2026-10-31 | Zrychlená animace jedení jablka (~3,6 s → ~2 s) |

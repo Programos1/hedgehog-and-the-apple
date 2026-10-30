@@ -566,9 +566,9 @@ export class GameScene extends Phaser.Scene {
       tweens: [
         {
           angle: 8,
-          duration: 140,
+          duration: 100,
           yoyo: true,
-          repeat: 2,
+          repeat: 1,
           onStart: () => {
             h.setPose('sniff');
             AudioManager.sfx('sniff');
@@ -579,7 +579,7 @@ export class GameScene extends Phaser.Scene {
       onComplete: () => (apple.def.worm ? this.eatLarva(apple) : this.rejectApple(apple)),
     });
     sniff.play();
-    this.tweens.add({ targets: apple.sprite, x: apple.sprite.x + 3, duration: 60, yoyo: true, repeat: 5 });
+    this.tweens.add({ targets: apple.sprite, x: apple.sprite.x + 3, duration: 60, yoyo: true, repeat: 3 });
   }
 
   /** Larva crawls out, the hedgehog eats it and spits the apple away. */
@@ -595,14 +595,14 @@ export class GameScene extends Phaser.Scene {
 
     this.tweens.chain({
       tweens: [
-        { targets: larva, scale: 1, y: a.y - 46, duration: 500, ease: 'Back.out' },
-        { targets: larva, angle: { from: -10, to: 10 }, duration: 160, yoyo: true, repeat: 2 },
+        { targets: larva, scale: 1, y: a.y - 46, duration: 320, ease: 'Back.out' },
+        { targets: larva, angle: { from: -10, to: 10 }, duration: 110, yoyo: true, repeat: 1 },
         {
           targets: larva,
           x: () => mouth().x,
           y: () => mouth().y,
           scale: 0.2,
-          duration: 350,
+          duration: 250,
           ease: 'Quad.in',
           onComplete: () => {
             larva.destroy();
@@ -610,12 +610,12 @@ export class GameScene extends Phaser.Scene {
             h.setPose('eat');
           },
         },
-        { targets: h.image, scaleY: h.baseScale * 0.92, scaleX: h.baseScale * 1.05, duration: 110, yoyo: true, repeat: 2 },
+        { targets: h.image, scaleY: h.baseScale * 0.92, scaleX: h.baseScale * 1.05, duration: 85, yoyo: true, repeat: 1 },
         {
           // Spit the apple out – the hedgehog only wanted the larva!
           targets: h.image,
           angle: -10,
-          duration: 120,
+          duration: 90,
           yoyo: true,
           onStart: () => {
             h.setPose('spit');
@@ -646,7 +646,7 @@ export class GameScene extends Phaser.Scene {
     this.tweens.addCounter({
       from: 0,
       to: 1,
-      duration: 650,
+      duration: 480,
       onUpdate: (tw) => {
         const t = tw.getValue() ?? 0;
         a.x = startX + dir * 200 * t;
