@@ -13,3 +13,6 @@ git config core.hooksPath .githooks
 ```
 
 Návod ke spuštění hry přibude s Fází 1.
+
+## Autorská práva
+© 2026 Programos1. Všechna práva vyhrazena. Repozitář je veřejný pouze ke čtení, podrobnosti v souboru [LICENSE](LICENSE).

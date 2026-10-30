@@ -8,9 +8,9 @@
 ---
 
 ## 📌 Aktuálně
-- **Teď:** doplnit zbytek [`DOTAZNIK.md`](DOTAZNIK.md) (zodpovězeno 1.2, 3.1, 4.1, 5.1, 8.1); potvrdit autorská práva / licenci před zveřejněním repozitáře.
-- **Další krok:** vytvořit GitHub repozitář `hedgehog-and-the-apple` → založit kostru hry v Phaseru (Fáze 1).
-- **Blokuje nás:** rozhodnutí o licenci (veřejný repozitář).
+- **Teď:** doplnit zbytek [`DOTAZNIK.md`](DOTAZNIK.md) (zodpovězeno 1.2, 3.1, 4.1, 5.1, 8.1).
+- **Další krok:** založit kostru hry v Phaseru (Fáze 1).
+- **Blokuje nás:** nic zásadního – zbytek dotazníku lze doplňovat průběžně.
 
 ---
 
@@ -35,7 +35,7 @@
 | R6 | Prototyp nejdřív se zástupnou grafikou; grafika se dělá později společně, vyměnitelná bez zásahu do kódu | brief |
 | R7 | První verze: **přesně 3 levely** (Louka → Les → Skalnaté údolí) | autor + brief |
 | R8 | Hudba bez vokálu, každý level vlastní skladba, stejná instrumentace | autor + brief |
-| R9 | Verzování na GitHubu – repozitář `hedgehog-and-the-apple`, veřejný (čeká na licenci) | autor |
+| R9 | Verzování na GitHubu – repozitář `hedgehog-and-the-apple`, veřejný, **všechna práva vyhrazena** (LICENSE, © Programos1) | autor |
 | R10 | Cílová skupina **3–5 let**: hra bez čtení, velká tlačítka, velmi lehké levely | dotazník 1.2 |
 | R11 | Herní smyčka: jablko očuchá **na místě** → červík → sní → vyprskne jablko, roste bříško; do úkrytu nosí **listí na hnízdo** | dotazník 3.1 |
 | R12 | **Nikdy neprohraje**: bez srdíček, po nehodě klubíčko + návrat na bezpečné místo | dotazník 4.1 |
@@ -49,13 +49,13 @@
 - [ ] 5.x Tiled, testovací zařízení, zkušenosti s programováním
 - [ ] 6.x Grafika – nástroje, technika animace
 - [ ] 7.x Hudba, licence Suno, zvuky
-- [ ] 8.x Autorská práva / licence, cíl hry, Google Play
+- [ ] 8.x Cíl hry, Google Play
 
 ## ⚠️ Rizika a problémy k vyřešení
 | # | Problém | Stav |
 |---|---|---|
 | P1 | Brief ChatGPT obsahuje ovládání v rozporu s R2 (běh, Space za chůze, klávesa E) | vyřešeno návrhem v design dokumentu, čeká na potvrzení |
-| P7 | Veřejný repozitář – ochrana autorských práv, AI grafika a hudba nemusí být chráněné autorským právem | rozhodnout licenci před pushem |
+| P7 | Veřejný repozitář – ochrana autorských práv, AI grafika a hudba nemusí být chráněné autorským právem | LICENSE „všechna práva vyhrazena“; AI obsah dotvářet ručně kvůli ochraně |
 | P2 | Fakta: „červ“ v jablku je housenka obaleče; ježci nenosí jablka na bodlinách; ježci **nedělají zásoby** jídla | vyřešeno herní smyčkou R11 |
 | P3 | Godot 4 web export je velký a na mobilních prohlížečích problematický | vyřešeno: Phaser 3 (R13) |
 | P4 | AI generovaná grafika – udržet stejnou podobu ježka napříč obrázky | řešit model sheetem, Fáze 3 |
@@ -70,7 +70,7 @@
 - [x] Zpracovat zadání a sepsat dokumenty
 - [ ] Vyplnit a zapracovat dotazník
 - [x] Přihlásit GitHub CLI
-- [ ] Rozhodnout licenci, vytvořit repozitář, `git push`
+- [x] LICENSE (všechna práva vyhrazena), veřejný repozitář na GitHubu
 - [ ] Uložit referenční screenshot do `docs/reference/`
 
 ### Fáze 1 – Kostra hry (zástupná grafika)
@@ -100,6 +100,7 @@
 - [ ] Objekty (jablko, housenka, listí, kameny, stromy, květiny)
 - [ ] Level 1 grafika → Level 2 → Level 3
 - [ ] UI grafika
+- [ ] Obrazovka „O hře“ s označením autorských práv
 
 ### Fáze 4 – Zvuk a hudba
 - [ ] Suno prompty pro menu + 3 levely (`docs/03_audio.md`)
@@ -121,3 +122,4 @@
 | 2026-10-30 | Založení projektu, zpracování zadání, dotazník |
 | 2026-10-30 | .gitattributes – LF konce řádků (hooky fungují i po klonování na Windows) |
 | 2026-10-30 | Zapsány odpovědi 1.2, 3.1, 4.1, 5.1, 8.1 (rozhodnutí R10–R13), GitHub přihlášen |
+| 2026-10-30 | LICENSE – všechna práva vyhrazena; repozitář zveřejněn na GitHubu |
