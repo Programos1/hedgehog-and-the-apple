@@ -16,17 +16,20 @@ export const PHYSICS = {
   /** Jump straight up: apex height in px. */
   jumpUpHeight: 190,
   /** Jump forward: apex height and horizontal distance in px (same start/end height). */
-  jumpForwardHeight: 120,
+  jumpForwardHeight: 150,
   jumpForwardDistance: 330,
 };
 
-/** Derived jump velocities (v = sqrt(2 g h), airtime = 2 v / g). */
-export const JUMP = (() => {
-  const vUp = Math.sqrt(2 * PHYSICS.gravity * PHYSICS.jumpUpHeight);
-  const vFwdY = Math.sqrt(2 * PHYSICS.gravity * PHYSICS.jumpForwardHeight);
+/**
+ * Jump velocities (v = sqrt(2 g h), airtime = 2 v / g) for a given world scale.
+ * Painted levels can be drawn at a different scale; their jumps grow with the hedgehog.
+ */
+export function jumpVelocities(scale = 1) {
+  const vUp = Math.sqrt(2 * PHYSICS.gravity * PHYSICS.jumpUpHeight * scale);
+  const vFwdY = Math.sqrt(2 * PHYSICS.gravity * PHYSICS.jumpForwardHeight * scale);
   const airtime = (2 * vFwdY) / PHYSICS.gravity;
-  return { vUp, vFwdY, vFwdX: PHYSICS.jumpForwardDistance / airtime };
-})();
+  return { vUp, vFwdY, vFwdX: (PHYSICS.jumpForwardDistance * scale) / airtime };
+}
 
 /** Hedgehog physics body size. */
 export const HEDGEHOG_BODY = { width: 84, height: 60 };

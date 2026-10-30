@@ -64,6 +64,8 @@ export class GameScene extends Phaser.Scene {
   private trailTimer = 0;
   private parallax: { layer: Phaser.GameObjects.TileSprite; factor: number }[] = [];
   private hud!: HudState;
+  /** Apples and leaves grow a bit in painted levels drawn at a larger scale. */
+  private itemScale = 1;
 
   constructor() {
     super('Game');
@@ -90,31 +92,37 @@ export class GameScene extends Phaser.Scene {
     this.physics.world.setBounds(0, -400, L.width, GAME_HEIGHT + 800, true, true, false, false);
     this.cameras.main.setBounds(0, 0, L.width, GAME_HEIGHT);
 
-    this.buildBackground();
+    const k = L.worldScale ?? 1;
+    this.itemScale = k === 1 ? 1 : k * 0.8;
+    if (L.painted) this.buildPainted(L.painted.key);
+    else this.buildBackground();
     const solids = this.buildGround();
+    const surfaces = this.buildSurfaces();
     const oneWay = this.buildPlatforms();
     this.buildMovers();
     this.buildHints();
 
     this.shelter = this.add.image(L.shelter.x, L.shelter.y + 6, 'shelter').setOrigin(0.5, 1).setDepth(5);
+    if (L.shelterPainted) this.shelter.setAlpha(0);
 
     for (const def of L.apples) {
-      const sprite = this.add.image(def.x, def.y, 'apple').setDepth(10);
+      const sprite = this.add.image(def.x, def.y, 'apple').setDepth(10).setScale(this.itemScale);
       // Level data gives the centre of a 56 px tall apple; keep the bottom on the ground for any artwork size.
-      sprite.y = def.y + 28 - sprite.height / 2;
+      sprite.y = def.y + 28 - sprite.displayHeight / 2;
       this.tweens.add({ targets: sprite, angle: { from: -4, to: 4 }, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       this.apples.push({ def, sprite, done: false });
     }
     for (const p of L.leaves) {
-      const sprite = this.add.image(p.x, p.y, 'leaf').setDepth(10);
+      const sprite = this.add.image(p.x, p.y, 'leaf').setDepth(10).setScale(this.itemScale);
       this.tweens.add({ targets: sprite, y: p.y - 6, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       this.leaves.push({ sprite, state: 'ground' });
     }
 
-    this.hedgehog = new Hedgehog(this, L.start.x, L.start.y);
+    this.hedgehog = new Hedgehog(this, L.start.x, L.start.y, k);
     this.lastSafe.set(L.start.x, L.start.y);
     this.physics.add.collider(this.hedgehog, solids);
     this.physics.add.collider(this.hedgehog, oneWay);
+    this.physics.add.collider(this.hedgehog, surfaces);
     this.physics.add.collider(
       this.hedgehog,
       this.movers.map((m) => m.sprite),
@@ -195,6 +203,44 @@ export class GameScene extends Phaser.Scene {
   private updateParallax(): void {
     const sx = this.cameras.main.scrollX;
     for (const { layer, factor } of this.parallax) layer.tilePositionX = (sx * factor) / layer.scaleX;
+  }
+
+  /** Painted level: one picture scaled to the screen height is the whole world. */
+  private buildPainted(key: string): void {
+    const img = this.add.image(0, 0, key).setOrigin(0, 0).setDepth(-10);
+    img.setScale(GAME_HEIGHT / img.height);
+  }
+
+  /**
+   * Walkable lines from a painted scene. Each line becomes a row of thin one-way strips, so the
+   * hedgehog follows gentle slopes and can always jump up through them from below.
+   */
+  private buildSurfaces(): Phaser.Physics.Arcade.StaticGroup {
+    const group = this.physics.add.staticGroup();
+    const STEP = 8;
+    for (const s of this.level.surfaces ?? []) {
+      const pts = s.points;
+      for (let x = pts[0][0]; x < pts[pts.length - 1][0]; x += STEP) {
+        const y = this.surfaceY(pts, x + STEP / 2);
+        const strip = this.add.zone(x, y, STEP + 2, 24).setOrigin(0, 0);
+        group.add(strip);
+        const body = strip.body as Phaser.Physics.Arcade.StaticBody;
+        body.checkCollision.down = false;
+        body.checkCollision.left = false;
+        body.checkCollision.right = false;
+      }
+    }
+    group.refresh();
+    return group;
+  }
+
+  private surfaceY(pts: [number, number][], x: number): number {
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1];
+      const [x1, y1] = pts[i];
+      if (x <= x1) return y0 + ((y1 - y0) * (x - x0)) / Math.max(1, x1 - x0);
+    }
+    return pts[pts.length - 1][1];
   }
 
   private buildGround(): Phaser.Physics.Arcade.StaticGroup {
@@ -307,11 +353,12 @@ export class GameScene extends Phaser.Scene {
     const h = this.hedgehog;
     if (h.mode === 'busy') return;
     const feet = h.feet;
-    if (!this.waterZones.some((z) => z.contains(feet.x, feet.y))) return;
+    const fellOut = feet.y > GAME_HEIGHT + 80;
+    if (!fellOut && !this.waterZones.some((z) => z.contains(feet.x, feet.y))) return;
 
     h.setBusy(true);
-    AudioManager.sfx('splash');
-    this.splash(feet.x, GROUND_Y + 50);
+    AudioManager.sfx(fellOut ? 'curl' : 'splash');
+    if (!fellOut) this.splash(feet.x, GROUND_Y + 50);
     h.visual.setAlpha(0);
     this.time.delayedCall(700, () => {
       h.teleport(this.lastSafe.x, this.lastSafe.y - h.body.height / 2);
@@ -336,9 +383,16 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private groundTopAt(x: number): number | null {
+  /** Top of the ground (tiles or painted surfaces) at x, the first one at or below `fromY`. */
+  private groundTopAt(x: number, fromY = -Infinity): number | null {
     const seg = this.level.ground.find((s) => x >= s.x && x <= s.x + s.w);
-    return seg ? (seg.y ?? GROUND_Y) : null;
+    if (seg) return seg.y ?? GROUND_Y;
+    const ys = (this.level.surfaces ?? [])
+      .filter((s) => x >= s.points[0][0] && x <= s.points[s.points.length - 1][0])
+      .map((s) => this.surfaceY(s.points, x))
+      .filter((y) => y >= fromY - 10)
+      .sort((a, b) => a - b);
+    return ys[0] ?? null;
   }
 
   private scheduleCone(def: ConeDef): void {
@@ -387,16 +441,16 @@ export class GameScene extends Phaser.Scene {
     if (this.finished || h.mode === 'busy' || h.mode === 'curled' || !h.grounded) return;
 
     for (const apple of this.apples) {
-      if (!apple.done && this.near(apple.sprite, 70, 60)) {
+      if (!apple.done && this.near(apple.sprite, 70 * h.k, 60 * h.k)) {
         this.inspectApple(apple);
         return;
       }
     }
 
-    const leaf = this.leaves.find((l) => l.state === 'ground' && this.near(l.sprite, 70, 60));
+    const leaf = this.leaves.find((l) => l.state === 'ground' && this.near(l.sprite, 70 * h.k, 60 * h.k));
     if (leaf) this.pickLeaf(leaf);
 
-    const atShelter = Math.abs(this.shelter.x - h.body.center.x) < 130 && Math.abs(this.shelter.y - h.body.bottom) < 80;
+    const atShelter = Math.abs(this.shelter.x - h.body.center.x) < 130 * h.k && Math.abs(this.shelter.y - h.body.bottom) < 80 * h.k;
     if (!atShelter) return;
     if (this.carried.length) this.deliverLeaves();
     else if (this.allDone()) this.finishLevel();
@@ -489,7 +543,8 @@ export class GameScene extends Phaser.Scene {
     const dir = h.facing;
     const startX = a.x;
     const landX = startX + dir * 200;
-    const floor = (this.groundTopAt(landX) ?? this.groundTopAt(startX) ?? GROUND_Y) - a.height / 2 + 4;
+    // Lands on the ground below; over a gap it falls out of the picture.
+    const floor = (this.groundTopAt(landX, a.y) ?? GAME_HEIGHT + 100) - a.displayHeight / 2 + 4;
     const startY = a.y;
     this.tweens.addCounter({
       from: 0,
@@ -565,7 +620,7 @@ export class GameScene extends Phaser.Scene {
       leaf.state = 'delivered';
       h.carrySlot.remove(leaf.sprite);
       this.add.existing(leaf.sprite);
-      leaf.sprite.setPosition(h.body.center.x, h.body.top - 20 - n * 10).setDepth(8).setScale(1);
+      leaf.sprite.setPosition(h.body.center.x, h.body.top - 20 - n * 10).setDepth(8).setScale(this.itemScale);
 
       // Leaves land on the shelter one after another, so the nest visibly grows.
       const i = this.shelterLeaves++;
@@ -576,7 +631,7 @@ export class GameScene extends Phaser.Scene {
         x: tx,
         y: ty,
         angle: Phaser.Math.Between(-40, 40),
-        scale: 1.4,
+        scale: 1.4 * this.itemScale,
         delay: n * 220,
         duration: 500,
         ease: 'Quad.out',

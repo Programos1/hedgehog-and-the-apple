@@ -53,6 +53,17 @@ export interface ConeDef {
   interval: number;
 }
 
+/** Walkable line traced from a painted scene (tools/trace-level.mjs), one-way from above. */
+export interface SurfaceDef {
+  points: [number, number][];
+}
+
+/** A level whose look is one painted picture instead of tiles. */
+export interface PaintedDef {
+  /** Texture key of the background picture (scaled to the game height). */
+  key: string;
+}
+
 export interface LevelData {
   id: number;
   /** i18n key of the level name. */
@@ -75,4 +86,14 @@ export interface LevelData {
   hints: HintDef[];
   /** Id of the fact card shown when the level is finished. */
   factId: string;
+  /** Painted background (replaces parallax + ground tiles). */
+  painted?: PaintedDef;
+  /** Walkable lines for painted levels. */
+  surfaces?: SurfaceDef[];
+  /** Size of the hedgehog and its jumps relative to the tiled levels (default 1). */
+  worldScale?: number;
+  /** The shelter is part of the painting – only its trigger area is used. */
+  shelterPainted?: boolean;
+  /** Not part of the 1→2→3 progression; always playable from the menu. */
+  extra?: boolean;
 }

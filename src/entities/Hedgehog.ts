@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { HEDGEHOG_BODY, JUMP, PHYSICS } from '../config';
+import { HEDGEHOG_BODY, PHYSICS, jumpVelocities } from '../config';
 import { AudioManager } from '../audio/AudioManager';
 import { NIBBLES_ATLAS, NIBBLES_SCALE, hasNibblesArt } from './NibblesAnims';
 
@@ -22,6 +22,8 @@ export type HedgehogPose = 'normal' | 'sniff' | 'eat' | 'spit' | 'hurt';
 
 /** Short crouch before take-off so the jump reads clearly. */
 const CROUCH_TIME = 0.09;
+/** Walking down a bumpy painted slope briefly leaves the ground – don't treat that as a fall. */
+const COYOTE_TIME = 0.1;
 
 export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
   declare body: Phaser.Physics.Arcade.Body;
@@ -42,24 +44,31 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
   private airVx = 0;
   private jumpGrace = 0;
   private animTime = 0;
+  private offGround = 0;
+  /** World scale: size, speed and jump sizes are multiplied by it. */
+  readonly k: number;
+  private readonly jump: ReturnType<typeof jumpVelocities>;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
+  constructor(scene: Phaser.Scene, x: number, y: number, k = 1) {
     super(scene, x, y, 'hedgehog');
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setVisible(false);
     this.setOrigin(0.5, 1);
-    this.body.setSize(HEDGEHOG_BODY.width, HEDGEHOG_BODY.height);
-    this.body.setOffset((this.width - HEDGEHOG_BODY.width) / 2, this.height - HEDGEHOG_BODY.height);
+    this.k = k;
+    this.jump = jumpVelocities(k);
+    const bw = HEDGEHOG_BODY.width * k, bh = HEDGEHOG_BODY.height * k;
+    this.body.setSize(bw, bh);
+    this.body.setOffset((this.width - bw) / 2, this.height - bh);
     this.setCollideWorldBounds(true);
 
     this.framed = hasNibblesArt(scene);
-    this.baseScale = this.framed ? NIBBLES_SCALE : 1;
+    this.baseScale = (this.framed ? NIBBLES_SCALE : 1) * k;
     this.image = this.framed
       ? scene.add.sprite(0, 0, NIBBLES_ATLAS, 'idle_0').setOrigin(0.5, 1)
       : scene.add.sprite(0, 0, 'hedgehog').setOrigin(0.5, 1);
     this.image.setScale(this.baseScale);
-    this.carrySlot = scene.add.container(this.framed ? -22 : -14, this.framed ? -100 : -78);
+    this.carrySlot = scene.add.container((this.framed ? -22 : -14) * k, (this.framed ? -100 : -78) * k).setScale(k);
     this.visual = scene.add.container(x, y, [this.image, this.carrySlot]).setDepth(20);
 
     scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.syncVisual, this);
@@ -95,7 +104,9 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    if (!this.grounded) {
+    this.offGround = this.grounded ? 0 : this.offGround + dt;
+    const onGround = this.grounded || (this.mode !== 'air' && this.offGround < COYOTE_TIME && this.body.velocity.y >= 0);
+    if (!onGround) {
       if (this.mode !== 'air') {
         // Walked off a ledge: keep the walking speed for a natural fall.
         this.airVx = this.body.velocity.x;
@@ -126,7 +137,7 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    this.body.setVelocityX(dir * PHYSICS.walkSpeed);
+    this.body.setVelocityX(dir * PHYSICS.walkSpeed * this.k);
     if (dir !== 0) this.facing = dir;
     this.mode = dir === 0 ? 'idle' : 'walk';
   }
@@ -137,10 +148,10 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
     this.jumpGrace = 0.1;
     if (kind === 'up') {
       this.airVx = 0;
-      this.body.setVelocityY(-JUMP.vUp);
+      this.body.setVelocityY(-this.jump.vUp);
     } else {
-      this.airVx = this.facing * JUMP.vFwdX;
-      this.body.setVelocityY(-JUMP.vFwdY);
+      this.airVx = this.facing * this.jump.vFwdX;
+      this.body.setVelocityY(-this.jump.vFwdY);
     }
     this.body.setVelocityX(this.airVx);
     AudioManager.sfx('jump');

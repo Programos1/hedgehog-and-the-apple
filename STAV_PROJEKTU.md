@@ -9,8 +9,8 @@
 
 ## 📌 Aktuálně
 - **Teď:** prototyp je hratelný – 3 levely, menu, pauza, dotykové ovládání. Online: https://programos1.github.io/hedgehog-and-the-apple/
-- **Úkol pro autora:** 🎯 #1 z fronty níže – list objektů (jablko, housenka, listí, úkryt…) ve stylu Nibblese.
-- **Další krok (Claude):** vyříznout objekty z listu a nasadit je do hry, pak pozadí Levelu 1.
+- **Úkol pro autora:** 🎯 nahrát hudbu do `public/assets/audio/music/` a říct, která patří kam; pak housenka.
+- **Další krok (Claude):** zapojit hudbu; malované levely podle `docs/04_malovane_levely.md`.
 - **Blokuje nás:** nic. Zbytek dotazníku (grafika 6.x, hudba 7.x) bude potřeba před Fází 3–4.
 
 ---
@@ -18,7 +18,10 @@
 ## 🎯 Fronta úkolů pro autora (podle priority, dávkuje se po jednom)
 | # | Úkol | Proč teď | Stav |
 |---|---|---|---|
-| 1 | Zbylé objekty ve stylu Nibblese: housenka, listy, prázdný úkryt, šiška, cedulka, list-vor, plošina (jablko ✅) | ježek a jablko už jsou ve hře, zbytek stylově nesedí | ▶️ zadáno |
+| 1 | Hudba: nahrát skladby do `public/assets/audio/music/` + říct, která je pro menu / louku / les / údolí | autor ji má připravenou | ▶️ zadáno |
+| 2 | Housenka ve stylu Nibblese (prompt v chatu) | hlavní naučný prvek | čeká |
+| 3 | První „ostrý“ malovaný level: čistý obrázek + označená kopie (`docs/04_malovane_levely.md`) | nový způsob tvorby levelů | čeká |
+| 4 | Zbylé objekty: listy, prázdný úkryt, šiška, cedulka, list-vor | stylová jednota | čeká |
 | 2 | Vyzkoušet hru na tabletu/telefonu s dítětem, poslat model zařízení a postřehy | ovládání a výkon na skutečném zařízení | čeká |
 | 5 | Suno: hudba pro menu + Slunnou louku (prompty v `docs/03_audio.md`), ověřit licenci (7.2) | hudba nezávisí na grafice | čeká |
 | 6 | Nahrát vlastní „mňam“ a „pfft“ (mobil stačí) | nejvýraznější zvuky hry | čeká |
@@ -42,6 +45,8 @@
 - [x] Listí po cestě, víc listů najednou, úkryt vždy na konci levelu
 - [x] Nápověda ve 3 stupních: šipka na okraji → jiskřičky + záře u přehlédnuté věci
 - [x] Jablko z autorovy grafiky + automaticky nakousnutá verze (`npm run apple`)
+- [x] **Malované levely**: pozadí = jeden obrázek, povrchy z modrého označení (`tools/trace-level.mjs`), testovací „Malovaná scéna“ v menu
+- [x] Pád do propasti = návrat na bezpečné místo; skok dopředu má vyšší oblouk (150 px)
 
 ---
 
@@ -86,6 +91,7 @@
 | P7 | AI grafika/hudba nemusí být chráněná autorským právem | AI výstupy ručně dotvářet |
 | P8 | Při velmi nízkém FPS (slabé zařízení) se hra zpomalí (nezrychlí/neprojde zdí) | ověřit na skutečném tabletu |
 | P9 | Ježek z listu je malý (~110 px), na velkém tabletu může být lehce rozmazaný | později list ve vyšším rozlišení |
+| P12 | Testovací scéna je z malého screenshotu (974 px, namalované UI zamalováno) – je rozmazaná, vlevo nahoře tmavá skvrna | ostré levely z čistých obrázků ve vysokém rozlišení |
 | P11 | Objekty a pozadí jsou zatím kreslené kódem, stylově nesedí k ježkovi | úkol #1 pro autora |
 | P10 | Zvuky jsou syntetické pípnutí, hudba zatím chybí | Fáze 4 |
 
@@ -153,3 +159,4 @@
 | 2026-10-30 | Název hry „Nibbles' Little Adventure“, fronta úkolů pro autora |
 | 2026-10-30 | Nibbles z autorovy grafiky (atlas + animace), listí po cestě / úkryt na konci, nápověda ve 3 stupních |
 | 2026-10-30 | Jablko z autorovy grafiky (vyříznuté z výřezu screenshotu), nakousnutá verze generovaná nástrojem |
+| 2026-10-30 | Malované levely (trace-level), testovací scéna, složka na hudbu, vyšší skok dopředu |

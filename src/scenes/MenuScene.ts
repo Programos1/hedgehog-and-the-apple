@@ -31,13 +31,13 @@ export class MenuScene extends Phaser.Scene {
 
     const unlocked = Progress.get().unlocked;
     LEVELS.forEach((level, i) => {
-      const x = GAME_WIDTH / 2 + (i - 1) * 480;
+      const x = GAME_WIDTH / 2 + (i - (LEVELS.length - 1) / 2) * 460;
       const y = 680;
-      const open = level.id <= unlocked;
+      const open = level.extra || level.id <= unlocked;
       const card = this.add.container(x, y).setDepth(10);
-      const frame = this.add.rectangle(0, 0, 400, 270, 0x3b2a1e, 0.6).setStrokeStyle(8, open ? 0xfff3d6 : 0x888888);
-      const thumb = this.add.image(0, -10, `bg-${level.theme}-mid`).setDisplaySize(370, 210);
-      const sky = this.add.image(0, -10, `bg-${level.theme}-sky`).setDisplaySize(370, 210);
+      const frame = this.add.rectangle(0, 0, 420, 270, 0x3b2a1e, 0.6).setStrokeStyle(8, open ? 0xfff3d6 : 0x888888);
+      const thumb = this.add.image(0, -10, level.painted?.key ?? `bg-${level.theme}-mid`).setDisplaySize(390, 210);
+      const sky = this.add.image(0, -10, level.painted?.key ?? `bg-${level.theme}-sky`).setDisplaySize(390, 210);
       card.add([frame, sky, thumb]);
       card.add(this.add.text(0, 165, t(level.nameKey), { ...style, fontSize: '40px', strokeThickness: 8 }).setOrigin(0.5));
       if (open) {

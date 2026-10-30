@@ -38,6 +38,8 @@ export const IMAGE_MANIFEST: Record<string, string | null> = {
   'bg-valley-far': null,
   'bg-valley-mid': null,
   'bg-valley-near': null,
+  // Painted level backgrounds (tools/trace-level.mjs)
+  'scene-test': 'assets/levels/test-scene.png',
   // Fact card illustrations, 420x300
   'fact-insectivore': null,
   'fact-larva': null,
