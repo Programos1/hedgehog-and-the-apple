@@ -1,18 +1,27 @@
 import Phaser from 'phaser';
 import { HEDGEHOG_BODY, JUMP, PHYSICS } from '../config';
 import { AudioManager } from '../audio/AudioManager';
+import { NIBBLES_ATLAS, NIBBLES_SCALE, hasNibblesArt } from './NibblesAnims';
 
-// The player character.
+// The player character – Nibbles the hedgehog.
 // Physics lives on an invisible arcade sprite; the visible hedgehog is a separate container
-// that follows it, so squash/bob/flip animations never disturb collisions.
+// that follows it, so squash/flip animations never disturb collisions.
 //
 // Movement rules (designed for small kids):
 // - walk left/right with one button,
 // - jumps start only from standing still; pressing jump while walking makes the hedgehog brake first,
 // - every jump has a fixed, predictable arc (no air control, no variable height).
+//
+// Visuals: frame animations from the Nibbles atlas (tools/slice-sprites.mjs) when available,
+// otherwise the procedural placeholder with simple bob/tilt animation.
 
-export type HedgehogMode = 'idle' | 'walk' | 'braking' | 'air' | 'busy' | 'curled';
+export type HedgehogMode = 'idle' | 'walk' | 'braking' | 'crouch' | 'air' | 'busy' | 'curled';
 export type JumpKind = 'up' | 'forward';
+/** Poses used by scripted sequences (apple inspection etc.). */
+export type HedgehogPose = 'normal' | 'sniff' | 'eat' | 'spit' | 'hurt';
+
+/** Short crouch before take-off so the jump reads clearly. */
+const CROUCH_TIME = 0.09;
 
 export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
   declare body: Phaser.Physics.Arcade.Body;
@@ -20,11 +29,16 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
   mode: HedgehogMode = 'idle';
   facing: 1 | -1 = 1;
   readonly visual: Phaser.GameObjects.Container;
-  readonly image: Phaser.GameObjects.Image;
-  /** Slot on the hedgehog's back where a carried leaf is shown. */
+  readonly image: Phaser.GameObjects.Sprite;
+  /** Slot on the hedgehog's back where carried leaves are shown. */
   readonly carrySlot: Phaser.GameObjects.Container;
+  /** Base display scale of the image; animations scale relative to it. */
+  readonly baseScale: number;
+  private readonly framed: boolean;
 
   private pendingJump: JumpKind | null = null;
+  private crouchTimer = 0;
+  private landTimer = 0;
   private airVx = 0;
   private jumpGrace = 0;
   private animTime = 0;
@@ -39,8 +53,13 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
     this.body.setOffset((this.width - HEDGEHOG_BODY.width) / 2, this.height - HEDGEHOG_BODY.height);
     this.setCollideWorldBounds(true);
 
-    this.image = scene.add.image(0, 0, 'hedgehog').setOrigin(0.5, 1);
-    this.carrySlot = scene.add.container(-14, -78);
+    this.framed = hasNibblesArt(scene);
+    this.baseScale = this.framed ? NIBBLES_SCALE : 1;
+    this.image = this.framed
+      ? scene.add.sprite(0, 0, NIBBLES_ATLAS, 'idle_0').setOrigin(0.5, 1)
+      : scene.add.sprite(0, 0, 'hedgehog').setOrigin(0.5, 1);
+    this.image.setScale(this.baseScale);
+    this.carrySlot = scene.add.container(this.framed ? -22 : -14, this.framed ? -100 : -78);
     this.visual = scene.add.container(x, y, [this.image, this.carrySlot]).setDepth(20);
 
     scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.syncVisual, this);
@@ -62,11 +81,19 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
   /** Per-frame movement. `dir` is -1/0/1, jump flags are single presses. */
   control(dt: number, dir: -1 | 0 | 1, jumpUp: boolean, jumpForward: boolean): void {
     this.animTime += dt;
+    if (this.landTimer > 0) this.landTimer -= dt;
     if (this.mode === 'busy' || this.mode === 'curled') {
       if (this.grounded) this.body.setVelocityX(0);
       return;
     }
     if (this.jumpGrace > 0) this.jumpGrace -= dt;
+
+    if (this.mode === 'crouch') {
+      this.body.setVelocityX(0);
+      this.crouchTimer -= dt;
+      if (this.crouchTimer <= 0 && this.pendingJump) this.launch(this.pendingJump);
+      return;
+    }
 
     if (!this.grounded) {
       if (this.mode !== 'air') {
@@ -91,7 +118,11 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
       const next = Math.sign(vx) * Math.max(0, Math.abs(vx) - PHYSICS.brakeDecel * dt);
       this.body.setVelocityX(next);
       this.mode = 'braking';
-      if (Math.abs(next) < 1) this.jump(this.pendingJump);
+      if (Math.abs(next) < 1) {
+        this.mode = 'crouch';
+        this.crouchTimer = this.framed ? CROUCH_TIME : 0;
+        if (this.crouchTimer <= 0) this.launch(this.pendingJump);
+      }
       return;
     }
 
@@ -100,7 +131,7 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
     this.mode = dir === 0 ? 'idle' : 'walk';
   }
 
-  private jump(kind: JumpKind): void {
+  private launch(kind: JumpKind): void {
     this.pendingJump = null;
     this.mode = 'air';
     this.jumpGrace = 0.1;
@@ -113,15 +144,18 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
     }
     this.body.setVelocityX(this.airVx);
     AudioManager.sfx('jump');
-    this.scene.tweens.add({ targets: this.image, scaleY: 1.12, scaleX: 0.92, duration: 120, yoyo: true });
+    const s = this.baseScale;
+    this.scene.tweens.add({ targets: this.image, scaleY: s * 1.1, scaleX: s * 0.94, duration: 120, yoyo: true });
   }
 
   private land(): void {
     this.mode = 'idle';
     this.airVx = 0;
+    this.landTimer = 0.2;
     this.body.setVelocityX(0);
     AudioManager.sfx('land');
-    this.scene.tweens.add({ targets: this.image, scaleY: 0.85, scaleX: 1.1, duration: 90, yoyo: true });
+    const s = this.baseScale;
+    this.scene.tweens.add({ targets: this.image, scaleY: s * 0.88, scaleX: s * 1.08, duration: 90, yoyo: true });
   }
 
   /** Stops all movement and hands control to a scripted sequence. */
@@ -129,21 +163,48 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
     this.pendingJump = null;
     this.mode = busy ? 'busy' : 'idle';
     this.body.setVelocityX(0);
+    if (!busy) this.setPose('normal');
   }
 
-  /** Harmless "hit": the hedgehog curls into a ball for a moment, like real hedgehogs do. */
+  /** Shows a pose during scripted sequences (no-op for the placeholder art). */
+  setPose(pose: HedgehogPose): void {
+    if (!this.framed) return;
+    switch (pose) {
+      case 'sniff':
+        this.image.stop().setFrame('discover_0');
+        break;
+      case 'eat':
+        this.image.play('nib-eat', true);
+        break;
+      case 'spit':
+        this.image.play('nib-spit', true);
+        break;
+      case 'hurt':
+        this.image.stop().setFrame('hurt_0');
+        break;
+      default:
+        this.image.play('nib-idle', true);
+    }
+  }
+
+  /** Harmless "hit": the hedgehog curls up for a moment, like real hedgehogs do when scared. */
   curlUp(duration = 1300): void {
     if (this.mode === 'curled') return;
     this.mode = 'curled';
     this.pendingJump = null;
     this.body.setVelocityX(0);
     AudioManager.sfx('curl');
-    this.image.setTexture('hedgehog-curled');
-    this.scene.tweens.add({ targets: this.image, angle: 360 * this.facing, duration: 500 });
+    if (this.framed) {
+      this.setPose('hurt');
+    } else {
+      this.image.setTexture('hedgehog-curled');
+      this.scene.tweens.add({ targets: this.image, angle: 360 * this.facing, duration: 500 });
+    }
     this.scene.time.delayedCall(duration, () => {
       if (this.mode !== 'curled') return;
-      this.image.setTexture('hedgehog').setAngle(0);
+      if (!this.framed) this.image.setTexture('hedgehog').setAngle(0);
       this.mode = 'idle';
+      this.setPose('normal');
     });
   }
 
@@ -160,18 +221,49 @@ export class Hedgehog extends Phaser.Physics.Arcade.Sprite {
     this.visual.setPosition(this.body.center.x, this.body.bottom + 4);
     this.visual.scaleX = this.facing;
     if (this.mode === 'curled' || this.mode === 'busy') return;
+    if (this.framed) this.animateFrames();
+    else this.animatePlaceholder();
+  }
 
-    // Lightweight procedural animation until real sprite animations exist.
+  /** Chooses the atlas animation/frame for the current movement state. */
+  private animateFrames(): void {
+    const img = this.image;
+    const vy = this.body.velocity.y;
+    switch (this.mode) {
+      case 'walk':
+        img.play('nib-walk', true);
+        break;
+      case 'braking':
+        img.stop().setFrame('idle_0');
+        break;
+      case 'crouch':
+        img.stop().setFrame('jump_0');
+        break;
+      case 'air': {
+        const forward = this.airVx !== 0;
+        const frame = vy < -220 ? 'jump_1' : vy < 220 ? 'jump_2' : forward ? 'jump_3' : 'fall_0';
+        img.stop().setFrame(frame);
+        break;
+      }
+      default:
+        if (this.landTimer > 0) img.stop().setFrame(this.landTimer > 0.1 ? 'jump_4' : 'land_2');
+        else img.play('nib-idle', true);
+    }
+  }
+
+  /** Lightweight procedural animation for the placeholder hedgehog. */
+  private animatePlaceholder(): void {
+    const img = this.image;
     if (this.mode === 'walk') {
-      this.image.y = -Math.abs(Math.sin(this.animTime * 11)) * 5;
-      this.image.angle = Math.sin(this.animTime * 11) * 3;
+      img.y = -Math.abs(Math.sin(this.animTime * 11)) * 5;
+      img.angle = Math.sin(this.animTime * 11) * 3;
     } else if (this.mode === 'air') {
-      this.image.y = 0;
-      this.image.angle = Phaser.Math.Clamp(this.body.velocity.y / 40, -12, 12) * (this.airVx === 0 ? 0 : 1);
+      img.y = 0;
+      img.angle = this.airVx === 0 ? 0 : Phaser.Math.Clamp(this.body.velocity.y / 40, -12, 12);
     } else {
-      this.image.y = 0;
-      this.image.angle = 0;
-      this.image.scaleY = this.scene.tweens.isTweening(this.image) ? this.image.scaleY : 1 + Math.sin(this.animTime * 3) * 0.015;
+      img.y = 0;
+      img.angle = 0;
+      if (!this.scene.tweens.isTweening(img)) img.scaleY = 1 + Math.sin(this.animTime * 3) * 0.015;
     }
   }
 }

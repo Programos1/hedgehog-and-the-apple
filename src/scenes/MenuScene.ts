@@ -5,6 +5,7 @@ import { RoundButton } from '../ui/RoundButton';
 import { LEVELS } from '../levels';
 import { Progress } from '../systems/Progress';
 import { t } from '../data/texts';
+import { NIBBLES_ATLAS, hasNibblesArt } from '../entities/NibblesAnims';
 
 // Main menu: title, three big level cards (locked ones show a padlock), sound toggle, copyright.
 
@@ -21,9 +22,12 @@ export class MenuScene extends Phaser.Scene {
     const style = { fontFamily: 'Trebuchet MS', color: '#fff3d6', stroke: '#3b2a1e', strokeThickness: 14 };
     this.add.text(GAME_WIDTH / 2, 150, t('title'), { ...style, fontSize: '100px' }).setOrigin(0.5).setDepth(10);
 
-    const hero = this.add.image(GAME_WIDTH / 2 - 120, 340, 'hedgehog').setScale(1.8).setDepth(10);
+    const hero = hasNibblesArt(this)
+      ? this.add.sprite(GAME_WIDTH / 2 - 120, 400, NIBBLES_ATLAS, 'idle_0').setOrigin(0.5, 1).setScale(2).play('nib-idle')
+      : this.add.image(GAME_WIDTH / 2 - 120, 340, 'hedgehog').setScale(1.8);
+    hero.setDepth(10);
     this.add.image(GAME_WIDTH / 2 + 120, 330, 'apple').setScale(1.8).setDepth(10);
-    this.tweens.add({ targets: hero, y: 320, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+    this.tweens.add({ targets: hero, y: hero.y - 20, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
 
     const unlocked = Progress.get().unlocked;
     LEVELS.forEach((level, i) => {

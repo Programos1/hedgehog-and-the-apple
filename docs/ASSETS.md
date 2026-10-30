@@ -8,6 +8,37 @@ Skutečnou grafiku a zvuk vložíš **bez zásahu do herní logiky**:
    `hedgehog: 'assets/images/hedgehog.png',`
 3. Hotovo. Pokud se soubor nenačte, hra použije zástupnou grafiku a do konzole napíše varování.
 
+## Ježek Nibbles (atlas z referenčního listu)
+
+Ježek se vyřezává automaticky z tvého referenčního obrázku `docs/reference/jezek.ikony.png`:
+
+```
+npm run sprites
+```
+
+Nástroj `tools/slice-sprites.mjs` podle `tools/nibbles.sprites.json` vyřízne snímky, odstraní pozadí
+a uloží atlas `public/assets/images/nibbles.png` + `.json`. Hra ho načte sama (`ATLAS_MANIFEST`).
+
+| Snímky v atlasu | Použití ve hře |
+|---|---|
+| `idle_0–3` | stání (dýchání) |
+| `walk_0–3` | chůze |
+| `jump_0` → `jump_1` → `jump_2` → `jump_3` / `fall_0` → `jump_4`, `land_2` | přikrčení → odraz → vrchol → pád → dopad |
+| `discover_0` | čuchání k jablku |
+| `eat_0–1`, `spit_0–1` | jedení housenky, vyprsknutí jablka |
+| `hurt_0` | trefa šiškou (klubíčko s hvězdičkami) |
+| `celebrate_0` | konec levelu (ježek v hnízdě) |
+| `face_*`, `front_0` | portrét v HUD, budoucí použití |
+
+**Když dodáš nový / lepší list:** ulož ho do `docs/reference/`, a pokud se změní rozložení, je potřeba
+upravit souřadnice v `tools/nibbles.sprites.json` (`node tools/find-sprites.mjs <obrázek>` je vypíše).
+
+**Pravidla pro listy s grafikou (aby šly automaticky vyříznout):**
+- jednobarevné světlé pozadí, **bez stínů pod postavou** a bez prachu/čar pohybu (nebo dál od postavy),
+- mezi obrázky aspoň **20 px volného místa**, popisky dál od obrázků,
+- všechny obrázky ve **stejném měřítku** a ideálně větší (postava aspoň 250 px na šířku → ostřejší na tabletu),
+- postava kouká **doprava**.
+
 ## Obrázky (klíč → rozměr)
 
 | Klíč | Rozměr (px) | Poznámka |

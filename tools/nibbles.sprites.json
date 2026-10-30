@@ -1,0 +1,45 @@
+{
+  "source": "docs/reference/jezek.ikony.png",
+  "output": "public/assets/images/nibbles",
+  "atlasWidth": 1024,
+  "frames": [
+    { "name": "idle_0", "group": "hog", "box": [16, 84, 113, 104] },
+    { "name": "idle_1", "group": "hog", "box": [130, 84, 113, 104] },
+    { "name": "idle_2", "group": "hog", "box": [245, 84, 118, 104] },
+    { "name": "idle_3", "group": "hog", "box": [364, 84, 118, 104] },
+
+    { "name": "walk_0", "group": "hog", "box": [508, 88, 113, 100] },
+    { "name": "walk_1", "group": "hog", "box": [622, 88, 108, 100] },
+    { "name": "walk_2", "group": "hog", "box": [731, 88, 113, 100] },
+    { "name": "walk_3", "group": "hog", "box": [845, 88, 126, 100] },
+
+    { "name": "jump_0", "group": "hog", "box": [21, 329, 126, 98] },
+    { "name": "jump_1", "group": "hog", "box": [158, 300, 116, 103] },
+    { "name": "jump_2", "group": "hog", "box": [283, 262, 116, 92] },
+    { "name": "jump_3", "group": "hog", "box": [402, 304, 118, 88] },
+    { "name": "jump_4", "group": "hog", "box": [520, 338, 122, 89] },
+
+    { "name": "fall_0", "group": "hog", "box": [690, 254, 107, 113] },
+    { "name": "fall_1", "group": "hog", "box": [807, 330, 136, 97] },
+
+    { "name": "land_0", "group": "hog", "box": [999, 326, 157, 101] },
+    { "name": "land_1", "group": "hog", "box": [1167, 326, 164, 101] },
+    { "name": "land_2", "group": "hog", "box": [1342, 323, 149, 105] },
+
+    { "name": "discover_0", "group": "hog", "box": [654, 524, 126, 109] },
+    { "name": "eat_0", "group": "hog", "box": [946, 538, 123, 98] },
+    { "name": "eat_1", "group": "hog", "box": [1070, 538, 118, 98] },
+    { "name": "spit_0", "group": "hog", "box": [1234, 539, 119, 97] },
+    { "name": "spit_1", "group": "hog", "box": [1355, 530, 109, 106] },
+
+    { "name": "hurt_0", "mode": "all", "box": [1315, 726, 116, 116] },
+    { "name": "celebrate_0", "mode": "all", "box": [1008, 712, 222, 137] },
+
+    { "name": "face_happy", "box": [13, 901, 104, 93] },
+    { "name": "face_surprised", "box": [114, 903, 100, 91] },
+    { "name": "face_laugh", "box": [211, 904, 100, 90] },
+    { "name": "face_sad", "box": [309, 905, 100, 89] },
+    { "name": "face_angry", "box": [417, 906, 100, 88] },
+    { "name": "front_0", "box": [853, 912, 82, 82] }
+  ]
+}

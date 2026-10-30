@@ -9,8 +9,8 @@
 
 ## 📌 Aktuálně
 - **Teď:** prototyp je hratelný – 3 levely, menu, pauza, dotykové ovládání. Online: https://programos1.github.io/hedgehog-and-the-apple/
-- **Úkol pro autora:** 🎯 #1 z fronty níže – vyzkoušet hru na tabletu/telefonu a poslat zpětnou vazbu.
-- **Další krok (Claude):** zapracovat zpětnou vazbu → připravit zadání model sheetu Nibblese (Fáze 3).
+- **Úkol pro autora:** 🎯 #1 z fronty níže – list objektů (jablko, housenka, listí, úkryt…) ve stylu Nibblese.
+- **Další krok (Claude):** vyříznout objekty z listu a nasadit je do hry, pak pozadí Levelu 1.
 - **Blokuje nás:** nic. Zbytek dotazníku (grafika 6.x, hudba 7.x) bude potřeba před Fází 3–4.
 
 ---
@@ -18,13 +18,13 @@
 ## 🎯 Fronta úkolů pro autora (podle priority, dávkuje se po jednom)
 | # | Úkol | Proč teď | Stav |
 |---|---|---|---|
-| 1 | Vyzkoušet prototyp na tabletu/telefonu (ideálně s dítětem), poslat zpětnou vazbu + model zařízení | ovlivní ovládání a obtížnost dřív, než se kreslí grafika | ▶️ zadáno |
-| 2 | Uložit referenční screenshot od ChatGPT do `docs/reference/` | podklad pro styl grafiky | čeká |
-| 3 | Vybrat nástroj na generování grafiky (dotazník 6.1) | podmínka pro Fázi 3 | čeká |
-| 4 | Vygenerovat model sheet Nibblese podle promptu od Clauda | základ celé grafiky | čeká |
+| 1 | List objektů ve stylu Nibblese (jablko, nakousnuté jablko, housenka, listy, prázdný úkryt, šiška, cedulka) | ježek už je ve hře, objekty teď stylově nesedí | ▶️ zadáno |
+| 2 | Vyzkoušet hru na tabletu/telefonu s dítětem, poslat model zařízení a postřehy | ovládání a výkon na skutečném zařízení | čeká |
 | 5 | Suno: hudba pro menu + Slunnou louku (prompty v `docs/03_audio.md`), ověřit licenci (7.2) | hudba nezávisí na grafice | čeká |
 | 6 | Nahrát vlastní „mňam“ a „pfft“ (mobil stačí) | nejvýraznější zvuky hry | čeká |
-| 7 | Objekty a pozadí Level 1 (seznam a rozměry dodá Claude) | po schválení ježka | čeká |
+| 7 | Pozadí Level 1 po vrstvách (nebe, hory, stromy, popředí) | po objektech | čeká |
+| ✅ | Referenční screenshot + grafika ježka (`docs/reference/`) | | hotovo |
+| ✅ | Zpětná vazba: listí po cestě, úkryt na konci, víc listů, šipka k přehlédnutému | | hotovo |
 
 ---
 
@@ -38,6 +38,9 @@
 - [x] Prompty pro Suno pro menu + 3 levely → [`docs/03_audio.md`](docs/03_audio.md)
 - [x] Návod na výměnu grafiky a zvuků → [`docs/ASSETS.md`](docs/ASSETS.md)
 - [x] Snímky obrazovky prototypu → [`docs/screenshots/`](docs/screenshots/)
+- [x] **Ježek Nibbles z autorovy grafiky** – animace stání, chůze, skoku, dopadu, čuchání, jedení, vyprsknutí, zásahu, oslavy (`npm run sprites`)
+- [x] Listí po cestě, víc listů najednou, úkryt vždy na konci levelu
+- [x] Nápověda ve 3 stupních: šipka na okraji → jiskřičky + záře u přehlédnuté věci
 
 ---
 
@@ -81,7 +84,8 @@
 | P6 | Pravidla Google Play pro dětské aplikace | Fáze 5 |
 | P7 | AI grafika/hudba nemusí být chráněná autorským právem | AI výstupy ručně dotvářet |
 | P8 | Při velmi nízkém FPS (slabé zařízení) se hra zpomalí (nezrychlí/neprojde zdí) | ověřit na skutečném tabletu |
-| P9 | Animace ježka jsou zatím jen procedurální (houpání, naklonění) | Fáze 3 |
+| P9 | Ježek z listu je malý (~110 px), na velkém tabletu může být lehce rozmazaný | později list ve vyšším rozlišení |
+| P11 | Objekty a pozadí jsou zatím kreslené kódem, stylově nesedí k ježkovi | úkol #1 pro autora |
 | P10 | Zvuky jsou syntetické pípnutí, hudba zatím chybí | Fáze 4 |
 
 ---
@@ -92,7 +96,7 @@
 - [x] Zpracovat zadání a sepsat dokumenty
 - [x] Zodpovědět klíčové otázky dotazníku
 - [x] GitHub repozitář, LICENSE
-- [ ] Uložit referenční screenshot do `docs/reference/`
+- [x] Uložit referenční screenshot do `docs/reference/`
 
 ### Fáze 1 – Kostra hry ✅
 - [x] Phaser 4 + TypeScript + Vite, build, spuštění v prohlížeči
@@ -115,8 +119,9 @@
 - [ ] Testování s dítětem 👶 a úprava obtížnosti podle něj
 
 ### Fáze 3 – Grafika
-- [ ] Model sheet Nibblese (proporce, barvy, výraz)
-- [ ] Animace ježka (chůze, skok, čuchání, jedení, vyprsknutí, klubíčko, spánek)
+- [x] Model sheet Nibblese (autorův referenční list)
+- [x] Animace ježka z listu (stání, chůze, skok, dopad, čuchání, jedení, vyprsknutí, zásah, oslava)
+- [ ] Ježek ve vyšším rozlišení (list s postavou ≥ 250 px) pro ostrost na tabletu
 - [ ] Objekty (jablko, housenka, listí, úkryt, šiška)
 - [ ] Level 1 grafika → Level 2 → Level 3
 - [ ] UI grafika, obrazovka „O hře“ s autorskými právy
@@ -145,3 +150,4 @@
 | 2026-10-30 | LICENSE – všechna práva vyhrazena; repozitář zveřejněn na GitHubu |
 | 2026-10-30 | Autor v licenci: Tomáš Horák. Hratelný prototyp se 3 levely, GitHub Pages, Suno prompty, docs |
 | 2026-10-30 | Název hry „Nibbles' Little Adventure“, fronta úkolů pro autora |
+| 2026-10-30 | Nibbles z autorovy grafiky (atlas + animace), listí po cestě / úkryt na konci, nápověda ve 3 stupních |

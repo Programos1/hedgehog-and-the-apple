@@ -5,14 +5,14 @@ export const level3: LevelData = {
   id: 3,
   nameKey: 'level3',
   theme: 'valley',
-  width: 5600,
+  width: 6000,
   start: { x: 180, y: 840 },
   ground: [
     { x: 0, w: 900 },
     { x: 1120, w: 920 },
     { x: 2040, w: 700, y: 580 },
     { x: 2980, w: 760 },
-    { x: 3740, w: 1860 },
+    { x: 3740, w: 2260 },
   ],
   platforms: [
     { x: 400, y: 740, w: 240 },
@@ -35,11 +35,11 @@ export const level3: LevelData = {
     { x: 3950, y: 874, worm: true },
   ],
   leaves: [
+    { x: 1700, y: 880 },
+    { x: 2450, y: 560 },
     { x: 4300, y: 880 },
-    { x: 5100, y: 880 },
-    { x: 5400, y: 880 },
   ],
-  shelter: { x: 4750, y: 900 },
+  shelter: { x: 5350, y: 900 },
   cones: [
     { x: 1500, interval: 3.2 },
     { x: 3600, interval: 3.6 },

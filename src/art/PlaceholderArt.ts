@@ -85,13 +85,17 @@ export function generatePlaceholderArt(scene: Phaser.Scene, skip: (key: string) 
     make(`bg-${theme}-near`, 960, 540, (g) => drawNear(g, theme));
   }
 
+  // With the real Nibbles art loaded, the hedgehog is added on top of the card by the scene.
+  const nibbles = scene.textures.exists('nibbles');
   make('fact-insectivore', 420, 300, (g) => {
     drawCardBg(g, 0xcfe8a8);
-    g.save();
-    g.translateCanvas(40, 120);
-    g.scaleCanvas(1.6, 1.6);
-    drawHedgehog(g);
-    g.restore();
+    if (!nibbles) {
+      g.save();
+      g.translateCanvas(40, 120);
+      g.scaleCanvas(1.6, 1.6);
+      drawHedgehog(g);
+      g.restore();
+    }
     drawBeetle(g, 330, 220);
     drawLarva(g, 300, 120, 1.4);
   });
@@ -102,7 +106,7 @@ export function generatePlaceholderArt(scene: Phaser.Scene, skip: (key: string) 
   });
   make('fact-curl', 420, 300, (g) => {
     drawCardBg(g, 0xd9e4f0);
-    drawCurled(g, 210, 160, 2.4);
+    if (!nibbles) drawCurled(g, 210, 160, 2.4);
   });
 
   generateIcons(scene, skip);

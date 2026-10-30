@@ -66,6 +66,10 @@ export interface LevelData {
   /** Water fills every gap between ground segments automatically. */
   apples: AppleDef[];
   leaves: PointDef[];
+  /**
+   * Always at the end of the level, so the child never has to walk back.
+   * Keep ~650 px of ground after it, so the camera shows it mid-screen and not under the touch buttons.
+   */
   shelter: PointDef;
   cones: ConeDef[];
   hints: HintDef[];

@@ -3,6 +3,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from '../config';
 import { Controls } from '../input/Controls';
 import { RoundButton } from '../ui/RoundButton';
 import type { HudState } from './GameScene';
+import { NIBBLES_ATLAS, hasNibblesArt } from '../entities/NibblesAnims';
 
 // Heads-up display drawn over the game: goals as picture slots (no numbers to read),
 // a pause button and – on touch devices – four big control buttons.
@@ -24,7 +25,8 @@ export class HudScene extends Phaser.Scene {
     const panelW = 160 + slots * 78;
     this.add.rectangle(24, 24, panelW, 120, 0x3b2a1e, 0.55).setOrigin(0, 0).setStrokeStyle(4, 0xfff3d6, 0.8);
     this.add.circle(84, 84, 48, 0xf6e2b0).setStrokeStyle(4, 0xfff3d6);
-    this.add.image(84, 112, 'hedgehog').setOrigin(0.5, 1).setScale(0.62);
+    if (hasNibblesArt(this)) this.add.image(84, 126, NIBBLES_ATLAS, 'face_happy').setOrigin(0.5, 1).setScale(0.8);
+    else this.add.image(84, 112, 'hedgehog').setOrigin(0.5, 1).setScale(0.62);
 
     let x = 170;
     this.wormSlots = [];

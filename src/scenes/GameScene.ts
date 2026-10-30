@@ -4,11 +4,12 @@ import { Controls } from '../input/Controls';
 import { Hedgehog } from '../entities/Hedgehog';
 import { AudioManager } from '../audio/AudioManager';
 import { LEVELS } from '../levels';
-import type { AppleDef, ConeDef, LevelData, MovingPlatformDef, PointDef } from '../levels/types';
+import type { AppleDef, ConeDef, LevelData, MovingPlatformDef } from '../levels/types';
 import type { MusicKey } from '../assets/manifest';
 
 // Gameplay scene: builds a level from data and runs the core loop:
-// find apples -> sniff -> eat the larva -> spit the apple out; carry leaves to the shelter to build the nest.
+// find apples -> sniff -> eat the larva -> spit the apple out; collect leaves on the way and bring them
+// to the shelter, which always stands at the end of the level (no need to walk back).
 // There is no losing: water or a falling pine cone only sends the hedgehog back / makes it curl up.
 
 export interface HudState {
@@ -47,12 +48,20 @@ export class GameScene extends Phaser.Scene {
   private waterZones: Phaser.Geom.Rectangle[] = [];
   private shelter!: Phaser.GameObjects.Image;
   private shelterLeaves = 0;
-  private carried: LeafObj | null = null;
+  private carried: LeafObj[] = [];
   private lastSafe = new Phaser.Math.Vector2();
   private safeTimer = 0;
   private onMover = false;
   private finished = false;
-  private guide!: Phaser.GameObjects.Image;
+  private guide!: Phaser.GameObjects.Container;
+  private guideArrow!: Phaser.GameObjects.Image;
+  private guideIcon!: Phaser.GameObjects.Image;
+  private halo!: Phaser.GameObjects.Arc;
+  /** Seconds since the last progress (larva eaten, leaf picked/delivered). Drives stronger hints. */
+  private stuckTime = 0;
+  /** Set when the hedgehog reaches the shelter while something is still missing. */
+  private missingAtShelter = false;
+  private trailTimer = 0;
   private parallax: { layer: Phaser.GameObjects.TileSprite; factor: number }[] = [];
   private hud!: HudState;
 
@@ -67,8 +76,11 @@ export class GameScene extends Phaser.Scene {
     this.movers = [];
     this.waterZones = [];
     this.parallax = [];
-    this.carried = null;
+    this.carried = [];
     this.shelterLeaves = 0;
+    this.stuckTime = 0;
+    this.missingAtShelter = false;
+    this.trailTimer = 0;
     this.finished = false;
     this.onMover = false;
   }
@@ -109,7 +121,7 @@ export class GameScene extends Phaser.Scene {
 
     for (const cone of L.cones) this.scheduleCone(cone);
 
-    this.guide = this.add.image(0, 0, 'icon-right').setScale(0.55).setTint(0xffe27a).setDepth(30).setVisible(false);
+    this.createGuide();
 
     const cam = this.cameras.main;
     cam.startFollow(this.hedgehog.visual, true, 0.08, 0.08, 0, 120);
@@ -151,7 +163,7 @@ export class GameScene extends Phaser.Scene {
     this.trackSafeSpot(dt);
     this.checkWater();
     this.checkPickups();
-    this.updateGuide();
+    this.updateGuide(dt);
   }
 
   // ------------------------------------------------------------------ world building
@@ -379,14 +391,14 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    if (!this.carried) {
-      const leaf = this.leaves.find((l) => l.state === 'ground' && this.near(l.sprite, 70, 60));
-      if (leaf) this.pickLeaf(leaf);
-    }
+    const leaf = this.leaves.find((l) => l.state === 'ground' && this.near(l.sprite, 70, 60));
+    if (leaf) this.pickLeaf(leaf);
 
-    const atShelter = Math.abs(this.shelter.x - h.body.center.x) < 110 && Math.abs(this.shelter.y - h.body.bottom) < 80;
-    if (atShelter && this.carried) this.deliverLeaf(this.carried);
-    else if (atShelter && this.allDone()) this.finishLevel();
+    const atShelter = Math.abs(this.shelter.x - h.body.center.x) < 130 && Math.abs(this.shelter.y - h.body.bottom) < 80;
+    if (!atShelter) return;
+    if (this.carried.length) this.deliverLeaves();
+    else if (this.allDone()) this.finishLevel();
+    else this.missingAtShelter = true;
   }
 
   private inspectApple(apple: AppleObj): void {
@@ -400,7 +412,16 @@ export class GameScene extends Phaser.Scene {
     const sniff = this.tweens.chain({
       targets: h.image,
       tweens: [
-        { angle: 8, duration: 140, yoyo: true, repeat: 2, onStart: () => AudioManager.sfx('sniff') },
+        {
+          angle: 8,
+          duration: 140,
+          yoyo: true,
+          repeat: 2,
+          onStart: () => {
+            h.setPose('sniff');
+            AudioManager.sfx('sniff');
+          },
+        },
         { angle: 0, duration: 60 },
       ],
       onComplete: () => (apple.def.worm ? this.eatLarva(apple) : this.rejectApple(apple)),
@@ -434,9 +455,10 @@ export class GameScene extends Phaser.Scene {
           onComplete: () => {
             larva.destroy();
             AudioManager.sfx('yum');
+            h.setPose('eat');
           },
         },
-        { targets: h.image, scaleY: 0.88, scaleX: 1.08, duration: 110, yoyo: true, repeat: 2 },
+        { targets: h.image, scaleY: h.baseScale * 0.92, scaleX: h.baseScale * 1.05, duration: 110, yoyo: true, repeat: 2 },
         {
           // Spit the apple out – the hedgehog only wanted the larva!
           targets: h.image,
@@ -444,12 +466,14 @@ export class GameScene extends Phaser.Scene {
           duration: 120,
           yoyo: true,
           onStart: () => {
+            h.setPose('spit');
             AudioManager.sfx('spit');
             this.spitApple(a);
           },
         },
       ],
       onComplete: () => {
+        this.progressMade();
         this.hud.wormsEaten++;
         this.events.emit('hud', this.hud);
         h.setBusy(false);
@@ -520,40 +544,52 @@ export class GameScene extends Phaser.Scene {
   private pickLeaf(leaf: LeafObj): void {
     this.tweens.killTweensOf(leaf.sprite);
     leaf.state = 'carried';
-    this.carried = leaf;
+    this.progressMade();
     AudioManager.sfx('pickup');
-    leaf.sprite.removeFromDisplayList();
-    leaf.sprite.setPosition(0, 0).setAngle(-15).setScale(1.2);
+    // Leaves pile up on the hedgehog's back, so it can carry them all to the shelter at the end.
+    const i = this.carried.length;
+    this.carried.push(leaf);
+    leaf.sprite.setPosition(i * 9 - 4, -i * 11).setAngle(-15 + (i % 2) * 25).setScale(1.2);
     this.hedgehog.carrySlot.add(leaf.sprite);
+    this.tweens.add({ targets: leaf.sprite, scale: { from: 1.8, to: 1.2 }, duration: 250, ease: 'Back.out' });
   }
 
-  private deliverLeaf(leaf: LeafObj): void {
+  private deliverLeaves(): void {
     const h = this.hedgehog;
-    this.carried = null;
-    leaf.state = 'delivered';
-    h.carrySlot.remove(leaf.sprite);
-    this.add.existing(leaf.sprite);
-    leaf.sprite.setPosition(h.body.center.x, h.body.top - 20).setDepth(8).setScale(1);
+    const leaves = this.carried;
+    this.carried = [];
+    this.progressMade();
+    leaves.forEach((leaf, n) => {
+      leaf.state = 'delivered';
+      h.carrySlot.remove(leaf.sprite);
+      this.add.existing(leaf.sprite);
+      leaf.sprite.setPosition(h.body.center.x, h.body.top - 20 - n * 10).setDepth(8).setScale(1);
 
-    // Each delivered leaf lands on the shelter, so the nest visibly grows.
-    const i = this.shelterLeaves++;
-    const tx = this.shelter.x - 80 + ((i * 70) % 170);
-    const ty = this.shelter.y - 150 - (i % 2) * 20;
-    AudioManager.sfx('deliver');
-    this.tweens.add({
-      targets: leaf.sprite,
-      x: tx,
-      y: ty,
-      angle: Phaser.Math.Between(-40, 40),
-      scale: 1.4,
-      duration: 500,
-      ease: 'Quad.out',
-      onComplete: () => this.sparkles(tx, ty),
+      // Leaves land on the shelter one after another, so the nest visibly grows.
+      const i = this.shelterLeaves++;
+      const tx = this.shelter.x - 90 + ((i * 47) % 180);
+      const ty = this.shelter.y - 150 - (i % 3) * 14;
+      this.tweens.add({
+        targets: leaf.sprite,
+        x: tx,
+        y: ty,
+        angle: Phaser.Math.Between(-40, 40),
+        scale: 1.4,
+        delay: n * 220,
+        duration: 500,
+        ease: 'Quad.out',
+        onStart: () => {
+          AudioManager.sfx('deliver');
+          this.tweens.add({ targets: this.shelter, scaleY: 1.06, duration: 150, yoyo: true });
+        },
+        onComplete: () => {
+          this.sparkles(tx, ty);
+          this.hud.leavesDelivered++;
+          this.events.emit('hud', this.hud);
+          if (this.allDone()) this.celebrateReady();
+        },
+      });
     });
-    this.tweens.add({ targets: this.shelter, scaleY: 1.06, duration: 150, yoyo: true });
-    this.hud.leavesDelivered++;
-    this.events.emit('hud', this.hud);
-    if (this.allDone()) this.celebrateReady();
   }
 
   private allDone(): boolean {
@@ -607,32 +643,101 @@ export class GameScene extends Phaser.Scene {
   }
 
   // ------------------------------------------------------------------ guidance for small kids
+  //
+  // Level 0: nothing – the child explores freely.
+  // Level 1: something was missed behind the hedgehog (or no progress for 12 s) → arrow at the
+  //          screen edge with a picture of what is missing.
+  // Level 2: no progress for a while, or the hedgehog reached the shelter with something missing →
+  //          big pulsing arrow, a sparkle trail leading the way and a glowing halo around the item.
 
-  private nextTarget(): PointDef | null {
-    if (this.carried || this.allDone()) return { x: this.shelter.x, y: this.shelter.y };
-    const h = this.hedgehog.body.center;
-    const targets: PointDef[] = [
-      ...this.apples.filter((a) => !a.done && a.def.worm).map((a) => ({ x: a.sprite.x, y: a.sprite.y })),
-      ...this.leaves.filter((l) => l.state === 'ground').map((l) => ({ x: l.sprite.x, y: l.sprite.y })),
-    ];
-    targets.sort((a, b) => Math.abs(a.x - h.x) - Math.abs(b.x - h.x));
-    return targets[0] ?? null;
+  private progressMade(): void {
+    this.stuckTime = 0;
+    this.missingAtShelter = false;
   }
 
-  /** A gentle arrow above the hedgehog points to the next goal when it is off screen. */
-  private updateGuide(): void {
+  private createGuide(): void {
+    const bg = this.add.circle(0, 0, 62, 0x3b2a1e, 0.55).setStrokeStyle(5, 0xffe27a);
+    this.guideArrow = this.add.image(0, 0, 'icon-right').setTint(0xffe27a).setScale(0.8);
+    this.guideIcon = this.add.image(0, 0, 'leaf');
+    this.guide = this.add.container(0, 0, [bg, this.guideArrow, this.guideIcon]).setScrollFactor(0).setDepth(40).setVisible(false);
+    this.halo = this.add.circle(0, 0, 70, 0xfff3a0, 0.35).setStrokeStyle(6, 0xffe27a, 0.9).setDepth(9).setVisible(false);
+  }
+
+  /** The next thing the child should go for, and whether it was left behind. */
+  private nextTarget(): { x: number; y: number; icon: string; missed: boolean } | null {
+    const hx = this.hedgehog.body.center.x;
+    const remaining = [
+      ...this.apples.filter((a) => !a.done && a.def.worm).map((a) => ({ x: a.sprite.x, y: a.sprite.y, icon: 'apple' })),
+      ...this.leaves.filter((l) => l.state === 'ground').map((l) => ({ x: l.sprite.x, y: l.sprite.y, icon: 'leaf' })),
+    ];
+    if (!remaining.length) return { x: this.shelter.x, y: this.shelter.y - 80, icon: 'shelter', missed: false };
+    const byDistance = (a: { x: number }, b: { x: number }) => Math.abs(a.x - hx) - Math.abs(b.x - hx);
+    const behind = remaining.filter((t) => t.x < hx - 150).sort(byDistance);
+    if (behind.length) return { ...behind[0], missed: true };
+    return { ...remaining.sort(byDistance)[0], missed: false };
+  }
+
+  private updateGuide(dt: number): void {
+    const h = this.hedgehog;
     const target = this.nextTarget();
-    const cam = this.cameras.main;
-    const visible = target && target.x > cam.scrollX + 60 && target.x < cam.scrollX + GAME_WIDTH - 60;
-    if (!target || visible || this.hedgehog.mode === 'busy') {
+    if (h.mode !== 'busy') this.stuckTime += dt;
+    if (!target || this.finished || h.mode === 'busy') {
       this.guide.setVisible(false);
+      this.halo.setVisible(false);
       return;
     }
-    const dir = target.x > this.hedgehog.body.center.x ? 1 : -1;
-    const bob = Math.sin(this.time.now / 200) * 8;
-    this.guide
-      .setVisible(true)
-      .setTexture(dir > 0 ? 'icon-right' : 'icon-left')
-      .setPosition(this.hedgehog.body.center.x + dir * (90 + bob), this.hedgehog.body.top - 70);
+
+    const strong = this.missingAtShelter || (target.missed && this.stuckTime > 10) || this.stuckTime > 20;
+    const show = target.missed || this.stuckTime > 12 || strong;
+
+    const cam = this.cameras.main;
+    const sx = target.x - cam.scrollX;
+    const onScreen = sx > 60 && sx < GAME_WIDTH - 60;
+
+    // Edge arrow with a picture of the missing item.
+    if (show && !onScreen) {
+      const dir = sx > GAME_WIDTH / 2 ? 1 : -1;
+      const t = this.time.now / (strong ? 120 : 220);
+      const sy = Phaser.Math.Clamp(target.y - cam.scrollY, 260, 720);
+      this.guide
+        .setVisible(true)
+        .setPosition(dir > 0 ? GAME_WIDTH - 90 + Math.sin(t) * 10 : 90 - Math.sin(t) * 10, sy)
+        .setScale(strong ? 1.35 + Math.sin(t) * 0.12 : 1);
+      this.guideArrow.setTexture(dir > 0 ? 'icon-right' : 'icon-left').setX(dir * 34);
+      this.guideIcon
+        .setTexture(target.icon)
+        .setX(-dir * 18)
+        .setScale(target.icon === 'shelter' ? 0.2 : 1);
+    } else {
+      this.guide.setVisible(false);
+    }
+
+    // Strong help: glowing halo around the item and a sparkle trail from the hedgehog towards it.
+    this.halo.setVisible(strong).setPosition(target.x, target.y);
+    if (strong) {
+      this.halo.setScale(1 + Math.sin(this.time.now / 150) * 0.12);
+      this.trailTimer -= dt;
+      if (this.trailTimer <= 0) {
+        this.trailTimer = 0.18;
+        this.trailSparkle(target.x, target.y);
+      }
+    }
+  }
+
+  private trailSparkle(tx: number, ty: number): void {
+    const from = this.hedgehog.body.center;
+    const angle = Phaser.Math.Angle.Between(from.x, from.y, tx, ty);
+    const dist = Math.min(420, Phaser.Math.Distance.Between(from.x, from.y, tx, ty));
+    const s = this.add.image(from.x, from.y - 30, 'sparkle').setDepth(26).setTint(0xffe27a);
+    this.tweens.add({
+      targets: s,
+      x: from.x + Math.cos(angle) * dist,
+      y: from.y - 30 + Math.sin(angle) * dist,
+      scale: { from: 2.2, to: 0.6 },
+      alpha: { from: 1, to: 0.2 },
+      duration: 1000,
+      ease: 'Sine.out',
+      onComplete: () => s.destroy(),
+    });
   }
 }

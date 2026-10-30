@@ -44,6 +44,12 @@ export const IMAGE_MANIFEST: Record<string, string | null> = {
   'fact-curl': null,
 };
 
+// Texture atlases (PNG + Phaser JSON hash). nibbles = the hedgehog, cut from
+// docs/reference/jezek.ikony.png by `npm run sprites`.
+export const ATLAS_MANIFEST: Record<string, { image: string; json: string } | null> = {
+  nibbles: { image: 'assets/images/nibbles.png', json: 'assets/images/nibbles.json' },
+};
+
 export type SfxKey =
   | 'jump'
   | 'land'

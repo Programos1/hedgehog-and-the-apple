@@ -166,9 +166,12 @@ Předpokládaná architektura (Phaser):
 1. Ježek dojde k jablku → zastaví se a **očuchá** ho.
 2. **Jablko s červíkem:** vyleze housenka → ježek ji sní („mňam“) → jablko **vyprskne** obloukem pryč. V HUD se rozsvítí housenka.
 3. **Zdravé jablko** (od levelu 2): bublina s přeškrtnutou housenkou, ježek zavrtí hlavou a jablko nechá.
-4. **Listí:** ježek nese vždy 1 list na zádech → donese ho do úkrytu → list přistane na hnízdě. V HUD se rozsvítí list.
-5. Když je vše hotové, úkryt se třpytí → ježek do něj vleze a usne → kartička „Víš, že…?“ → další level.
-6. Šipka nad ježkem ukazuje k nejbližšímu cíli, když je mimo obrazovku (pro nejmenší).
+4. **Listí:** leží **po cestě**, ježek jich nese **víc najednou** na zádech. **Úkryt je vždy na konci levelu** – nikdy se nemusí vracet (zpětná vazba autora 2026-10-30).
+5. Když je vše hotové, úkryt se třpytí → ježek do něj vleze → kartička „Víš, že…?“ → další level.
+6. **Nápověda ve 3 stupních** (pro nejmenší):
+   - nic – dítě volně objevuje,
+   - něco **přehlédlo za sebou** (nebo 12 s bez pokroku) → **šipka na okraji obrazovky** s obrázkem, co chybí,
+   - 10 s bez pokroku, nebo došlo k úkrytu a něco chybí → šipka pulzuje a je větší, **jiskřičky vedou cestu** a kolem chybějící věci **září kruh**.
 
 ### Pevné skoky (`src/config.ts`)
 - Chůze 230 px/s. Skok nahoru: výška ~190 px. Skok dopředu: výška ~120 px, délka ~330 px.
