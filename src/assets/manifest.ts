@@ -42,8 +42,7 @@ export const IMAGE_MANIFEST: Record<string, string | null> = {
   'kit-valley-far': 'assets/kits/valley/far.png',
   'kit-valley-mid': 'assets/kits/valley/mid.png',
   'kit-valley-island': 'assets/kits/valley/island.png',
-  'kit-valley-cliff': 'assets/kits/valley/cliff.png',
-  'kit-valley-rock': 'assets/kits/valley/rock.png',
+  'kit-valley-cliff': 'assets/kits/valley/cliff-full.png',
   'kit-valley-shelter': 'assets/kits/valley/shelter.png',
   // Fact card illustrations, 420x300
   'fact-insectivore': null,

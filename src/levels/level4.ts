@@ -10,7 +10,6 @@ const VALLEY_KIT = {
   mid: 'kit-valley-mid',
   island: 'kit-valley-island',
   cliff: 'kit-valley-cliff',
-  rock: 'kit-valley-rock',
   shelter: 'kit-valley-shelter',
   scale: 1.8,
 };

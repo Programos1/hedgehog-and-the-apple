@@ -65,9 +65,8 @@ export interface KitDef {
   mid: string;
   /** Floating island used for one-way and moving platforms. */
   island: string;
-  /** Cliff top (moss + rock face) for ground segments, plus a rock texture tiled below it. */
+  /** Full cliff column (moss top, rock face darkening downwards) drawn for ground segments. */
   cliff: string;
-  rock: string;
   shelter: string;
   /** Display scale of the pieces (matches the hedgehog to the painted proportions). */
   scale: number;

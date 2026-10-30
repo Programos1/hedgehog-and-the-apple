@@ -166,3 +166,4 @@
 | 2026-10-31 | Malovaná scéna zobrazena celá (zpětná vazba: „příliš přiblížené“) |
 | 2026-10-31 | Malovaná scéna zrušena, nový Level 4 „Údolí vodopádů“ ze stavebnice kusů autorovy malby |
 | 2026-10-31 | Zrychlená animace jedení jablka (~3,6 s → ~2 s) |
+| 2026-10-31 | Level 4: skály jako jeden souvislý obrázek (bez schodů, děr a opakovaného vzoru) |

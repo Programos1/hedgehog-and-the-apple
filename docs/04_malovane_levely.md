@@ -9,7 +9,7 @@ Z malovaného obrázku se **vyříznou jednotlivé kusy** a level se z nich **po
 | `far.png` | obloha, mraky, sopka | vzdálené pozadí (pomalu se posouvá) |
 | `mid.png` | údolí s vodopády a řekou | bližší pozadí (posouvá se rychleji) |
 | `island.png` | létající ostrůvek s mechem | plošiny i jezdící plošiny |
-| `cliff.png` + `rock.png` | skála s mechem + skalní textura | pevná zem (start a cíl), dolů tmavne do údolí |
+| `cliff-full.png` | skála s mechem z malby + dogenerované pokračování skalní stěny | pevná zem (start a cíl), nepravidelné okraje, dolů tmavne do údolí |
 | `shelter.png` | hromada listí s cedulkou | úkryt na konci |
 
 - Stavba kitu: `npm run kit:valley` (`tools/kits/build-valley-kit.mjs`, vyřezávání `tools/cut-region.mjs`).
